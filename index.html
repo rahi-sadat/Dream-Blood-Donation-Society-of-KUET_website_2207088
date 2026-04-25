@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dream - Voluntary Blood Donation Society of KUET</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>   <header>
@@ -13,7 +15,7 @@
             <img src="images/logo.png" alt="Dream logo" width="50">
             <div class="brand-text">
                 <span class="brand-name">DREAM</span>
-                <span class="brand-sub">KUET</span>
+               
             </div>
 
         </div>
@@ -24,15 +26,20 @@
             <li><a href="#requests">Blood Requests</a></li>
             <li><a href="#campaigns">Campaigns</a></li>
         </ul>
-        <div class="nav-actions">
-            <div class="theme-container">
-                <label class="" switch" for="checkbox"> <input type="checkbox" id="mode-toggle"><span
-                        class="slider round"></span></label>
-                <small id="mode-label">Light Mode</small>
-            </div>
-             <button type="button" class="btn-register">Register</button>
-            <button type="button" class="btn-login">Login</button>
-        </div>
+       
+    <div class="nav-actions">
+    <button type="button" class="btn-register">Register</button>
+    <button type="button" class="btn-login">Login</button>
+
+    <div class="theme-container">
+        <label class="switch">
+            <input type="checkbox" id="mode-toggle">
+            <span class="slider"></span>
+        </label>
+        <span id="mode-label">Light</span>
+    </div>
+    
+</div>
     </nav>
     </header>
 
@@ -42,12 +49,11 @@
                <h1>Every Drop Counts. <br>Be the Pulse of Hope.</h1>
                 <p>Join the Dream-Voluntary Blood Donation Society of KUET. We bridge the gap between donors and those in need, right here on campus.</p>
                 <div class="cta-group">
-                    <button class="btn-primary">Request Blood</button>
+                    <button class="btn-primary">Blood Request</button>
                     <button class="btn-secondary">Become a Donor</button>
                 </div>
             </div>
         </section>
-
         <section id="search">
             <h2>Find a Donor</h2>
             <div class="search-bar-placeholder">
@@ -72,15 +78,32 @@
 
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 Dream-Voluntary Blood Donation Society of KUET.</p>
-            <ul class="footer-links">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Contact Support</a></li>
-            </ul>
+   <footer class="main-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <img src="images/logo.png" alt="Dream Logo" width="60">
+            <h3>DREAM KUET</h3>
+            <p>An automated blood service connecting seekers with donors in a moment.</p>
         </div>
-    </footer>
+        <div class="footer-column">
+            <h4>Important Links</h4>
+            <a href="#">Home</a>
+            <a href="#">Add Blood Request</a>
+            <a href="#">Search Donors</a>
+            <a href="#">About Us</a>
+        </div>
+        <div class="footer-column">
+            <h4>About Blood</h4>
+            <a href="#">What is blood?</a>
+            <a href="#">Who can donate?</a>
+            <a href="#">Blood Groups</a>
+            <a href="#">FAQs</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Dream-Voluntary Blood Donation Society of KUET. All Rights Reserved.</p>
+    </div>
+</footer>
 </body>
 
 </html>
