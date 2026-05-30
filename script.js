@@ -5,9 +5,11 @@ const homePage = document.getElementById('home-page');
 const aboutPage = document.getElementById('about-page');
 const campaignPage = document.getElementById('campaign-content');
 const navLinks = document.querySelectorAll('.nav-links a');
+const linkButtons = document.querySelectorAll('[data-link]');
 
 
 async function showPage(pageId) {
+    if (!homePage || !aboutPage || !campaignPage) return;
    
     homePage.style.display = 'none';
     aboutPage.style.display = 'none';
@@ -66,6 +68,18 @@ navLinks.forEach(link => {
     });
 });
 
+linkButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        window.location.href = button.dataset.link;
+    });
+});
+
+const initialTarget = window.location.hash.substring(1);
+
+if (initialTarget === 'about' || initialTarget === 'campaigns') {
+    showPage(initialTarget);
+}
+
 
 const learnMoreBtn = document.querySelector('.btn-learn-more');
 
@@ -116,5 +130,32 @@ function initCampaignSliders() {
         prevBtn.addEventListener('click', () => updateSlider(currentIndex - 1));
         nextBtn.addEventListener('click', () => updateSlider(currentIndex + 1));
         updateSlider(0);
+    });
+}
+
+const requestForm = document.querySelector('[data-request-form]');
+
+if (requestForm) {
+    const dateInput = requestForm.querySelector('#needed_date');
+    const phoneInput = requestForm.querySelector('#contact_phone');
+    const today = new Date().toISOString().split('T')[0];
+
+    if (dateInput) {
+        dateInput.min = today;
+    }
+
+    requestForm.addEventListener('submit', (event) => {
+        if (dateInput && dateInput.value < today) {
+            event.preventDefault();
+            alert('Please select today or a future date for the blood request.');
+            dateInput.focus();
+            return;
+        }
+
+        if (phoneInput && !/^01[0-9]{9}$/.test(phoneInput.value.trim())) {
+            event.preventDefault();
+            alert('Please enter a valid Bangladeshi mobile number, like 01XXXXXXXXX.');
+            phoneInput.focus();
+        }
     });
 }

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/districts.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: add-request.php');
@@ -33,6 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!preg_match('/^01[0-9]{9}$/', $phone)) {
         $errors[] = 'Please enter a valid Bangladeshi mobile number.';
+    }
+
+    if (!in_array($bloodGroup, ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'], true)) {
+        $errors[] = 'Please select a valid blood group.';
+    }
+
+    if (!in_array($district, $districts, true)) {
+        $errors[] = 'Please select a valid district.';
     }
 
     if (strlen($password) < 6) {
@@ -121,7 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label for="district">District</label>
-                        <input type="text" id="district" name="district" value="<?php echo htmlspecialchars($district); ?>" required>
+                        <select id="district" name="district" required>
+                            <option value="">Select</option>
+                            <?php foreach ($districts as $districtName): ?>
+                                <option value="<?php echo htmlspecialchars($districtName); ?>" <?php echo $district === $districtName ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($districtName); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -139,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
             <p class="auth-switch">Already have an account? <a href="login.php">Login</a></p>
-            <a href="index.html" class="auth-back">Back to home</a>
+            <a href="index.php" class="auth-back">Back to home</a>
         </section>
     </main>
 </body>

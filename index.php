@@ -1,3 +1,7 @@
+<?php
+session_start();
+require_once __DIR__ . '/config/districts.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,13 +28,20 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#search">Search Donor</a></li>
-                <li><a href="#requests">Blood Requests</a></li>
+                <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="#campaigns">Campaigns</a></li>
             </ul>
 
             <div class="nav-actions">
-                <button type="button" class="btn-register">Register</button>
-                <button type="button" class="btn-login">Login</button>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a class="profile-nav-link" href="profile.php" aria-label="Open profile">
+                        <span class="profile-icon">P</span>
+                        <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                    </a>
+                <?php else: ?>
+                    <button type="button" class="btn-register" data-link="register.php">Register</button>
+                    <button type="button" class="btn-login" data-link="login.php">Login</button>
+                <?php endif; ?>
 
                 
 
@@ -46,8 +57,8 @@
                 <p>Join the Dream-Voluntary Blood Donation Society of KUET. We bridge the gap between donors and those
                     in need, right here on campus.</p>
                 <div class="cta-group">
-                    <button class="btn-primary">Blood Request</button>
-                    <button class="btn-secondary">Become a Donor</button>
+                    <button class="btn-primary" type="button" data-link="add-request.php">Blood Request</button>
+                    <button class="btn-secondary" type="button" data-link="register.php">Become a Donor</button>
                 </div>
             </div>
         </section>
@@ -76,9 +87,9 @@
             <label>District</label>
             <select>
                 <option value="">Select</option>
-                <option value="khulna">Khulna</option>
-                <option value="dhaka">Dhaka</option>
-                <!-- Add more as needed -->
+                <?php foreach ($districts as $districtName): ?>
+                    <option value="<?php echo htmlspecialchars($districtName); ?>"><?php echo htmlspecialchars($districtName); ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
 
@@ -177,7 +188,7 @@
             <div class="footer-column">
                 <h4>Important Links</h4>
                 <a href="#home">Home</a>
-                <a href="#requests">Add Blood Request</a>
+                <a href="add-request.php">Add Blood Request</a>
                 <a href="#search">Search Donors</a>
                 <a href="#about">About Us</a>
             </div>

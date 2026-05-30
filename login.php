@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
 
             <p class="auth-switch">New here? <a href="register.php">Create an account</a></p>
-            <a href="index.html" class="auth-back">Back to home</a>
+            <a href="index.php" class="auth-back">Back to home</a>
         </section>
     </main>
 </body>
