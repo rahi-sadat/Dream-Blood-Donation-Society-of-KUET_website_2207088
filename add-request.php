@@ -1,4 +1,5 @@
 <?php
+// Request page setup: only logged-in users can submit blood requests.
 session_start();
 require_once __DIR__ . '/config/districts.php';
 
@@ -6,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
+
+$profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,6 +22,7 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 
 <body>
+    <!-- Main navigation: includes profile menu for the logged-in requester. -->
     <header>
         <nav>
             <div class="logo-area">
@@ -36,16 +40,32 @@ if (!isset($_SESSION['user_id'])) {
             </ul>
 
             <div class="nav-actions">
-                <a class="profile-nav-link" href="profile.php" aria-label="Open profile">
-                    <span class="profile-icon">P</span>
+                <button class="profile-nav-link" type="button" data-profile-menu-toggle aria-label="Open profile menu">
+                    <span class="profile-icon"><?php echo htmlspecialchars($profileInitial); ?></span>
                     <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                </a>
-                <a class="btn-login nav-link-button" href="logout.php">Logout</a>
+                </button>
             </div>
         </nav>
     </header>
 
+    <!-- Profile sidebar: account links available while adding a request. -->
+    <div class="profile-menu-backdrop" data-profile-menu-close></div>
+    <aside class="profile-sidebar" aria-label="Profile menu">
+        <div class="profile-sidebar-head">
+            <span class="profile-icon large"><?php echo htmlspecialchars($profileInitial); ?></span>
+            <div>
+                <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                <p>Logged in</p>
+            </div>
+        </div>
+        <a href="profile.php?section=info">Profile Information</a>
+        <a href="profile.php?section=requests">My Blood Requests</a>
+        <a href="add-request.php">Add Blood Request</a>
+        <a class="sidebar-logout" href="logout.php">Logout</a>
+    </aside>
+
     <main>
+        <!-- Blood request form: collects patient, location, and contact details. -->
         <section class="request-hero">
             <div class="request-hero-content">
                 <span class="eyebrow">Emergency support</span>

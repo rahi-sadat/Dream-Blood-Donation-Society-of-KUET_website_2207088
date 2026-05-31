@@ -1,6 +1,8 @@
 <?php
+// Homepage setup: starts session so the navbar can detect login state.
 session_start();
 require_once __DIR__ . '/config/districts.php';
+$profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +16,7 @@ require_once __DIR__ . '/config/districts.php';
 </head>
 
 <body>
+    <!-- Main navigation: shows Login/Register for guests and profile menu for logged-in users. -->
     <header>
         <nav>
             <div class="logo-area">
@@ -34,10 +37,10 @@ require_once __DIR__ . '/config/districts.php';
 
             <div class="nav-actions">
                 <?php if (isset($_SESSION['user_id'])): ?>
-                    <a class="profile-nav-link" href="profile.php" aria-label="Open profile">
-                        <span class="profile-icon">P</span>
+                    <button class="profile-nav-link" type="button" data-profile-menu-toggle aria-label="Open profile menu">
+                        <span class="profile-icon"><?php echo htmlspecialchars($profileInitial); ?></span>
                         <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                    </a>
+                    </button>
                 <?php else: ?>
                     <button type="button" class="btn-register" data-link="register.php">Register</button>
                     <button type="button" class="btn-login" data-link="login.php">Login</button>
@@ -49,6 +52,25 @@ require_once __DIR__ . '/config/districts.php';
         </nav>
     </header>
 
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <!-- Profile sidebar: quick account links for logged-in users. -->
+        <div class="profile-menu-backdrop" data-profile-menu-close></div>
+        <aside class="profile-sidebar" aria-label="Profile menu">
+            <div class="profile-sidebar-head">
+                <span class="profile-icon large"><?php echo htmlspecialchars($profileInitial); ?></span>
+                <div>
+                    <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                    <p>Logged in</p>
+                </div>
+            </div>
+            <a href="profile.php?section=info">Profile Information</a>
+            <a href="profile.php?section=requests">My Blood Requests</a>
+            <a href="add-request.php">Add Blood Request</a>
+            <a class="sidebar-logout" href="logout.php">Logout</a>
+        </aside>
+    <?php endif; ?>
+
+    <!-- Homepage content: hero, donor search, about section, and request preview area. -->
     <main id="main-content">
         <div id="home-page">
         <section id="home" class="hero-section">

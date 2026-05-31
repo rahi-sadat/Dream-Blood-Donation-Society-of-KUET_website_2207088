@@ -1,4 +1,5 @@
 <?php
+// PHP setup and access control: only logged-in users can open the profile page.
 session_start();
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/districts.php';
@@ -9,9 +10,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = (int) $_SESSION['user_id'];
+$profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
+$activeSection = $_GET['section'] ?? 'info';
+$activeSection = in_array($activeSection, ['info', 'requests'], true) ? $activeSection : 'info';
 $errors = [];
 $success = '';
 
+// Profile update handler: saves edited account information.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
@@ -46,24 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = 'Profile updated successfully.';
         }
     }
-
-    if ($action === 'update_request_status') {
-        $requestId = (int) ($_POST['request_id'] ?? 0);
-        $status = trim($_POST['status'] ?? '');
-        $allowedStatuses = ['Pending', 'Fulfilled', 'Cancelled'];
-
-        if ($requestId > 0 && in_array($status, $allowedStatuses, true)) {
-            $statement = $pdo->prepare('UPDATE blood_requests SET status = ? WHERE id = ? AND user_id = ?');
-            $statement->execute([$status, $requestId, $userId]);
-            $success = 'Request status updated.';
-        }
-    }
 }
 
+// Load current user information for the profile form and sidebar.
 $statement = $pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
 $statement->execute([$userId]);
 $user = $statement->fetch();
 
+// Load the logged-in user's own blood requests.
 $statement = $pdo->prepare('SELECT * FROM blood_requests WHERE user_id = ? ORDER BY created_at DESC');
 $statement->execute([$userId]);
 $requests = $statement->fetchAll();
@@ -80,6 +75,7 @@ $requests = $statement->fetchAll();
 </head>
 
 <body>
+    <!-- Main navigation: shared top menu with profile drawer trigger. -->
     <header>
         <nav>
             <div class="logo-area">
@@ -97,27 +93,49 @@ $requests = $statement->fetchAll();
             </ul>
 
             <div class="nav-actions">
-                <a class="profile-nav-link active-profile" href="profile.php" aria-label="Open profile">
-                    <span class="profile-icon">P</span>
+                <button class="profile-nav-link active-profile" type="button" data-profile-menu-toggle aria-label="Open profile menu">
+                    <span class="profile-icon"><?php echo htmlspecialchars($profileInitial); ?></span>
                     <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
-                </a>
-                <a class="btn-login nav-link-button" href="logout.php">Logout</a>
+                </button>
             </div>
         </nav>
     </header>
 
+    <!-- Profile sidebar: quick account actions shown when the profile name is clicked. -->
+    <div class="profile-menu-backdrop" data-profile-menu-close></div>
+    <aside class="profile-sidebar" aria-label="Profile menu">
+        <div class="profile-sidebar-head">
+            <span class="profile-icon large"><?php echo htmlspecialchars($profileInitial); ?></span>
+            <div>
+                <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                <p><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
+            </div>
+        </div>
+        <a href="profile.php?section=info">Profile Information</a>
+        <a href="profile.php?section=requests">My Blood Requests</a>
+        <a href="add-request.php">Add Blood Request</a>
+        <a class="sidebar-logout" href="logout.php">Logout</a>
+    </aside>
+
     <main>
+        <!-- Profile hero: page heading changes based on the selected sidebar section. -->
         <section class="profile-hero">
             <div class="request-hero-content">
                 <span class="eyebrow">Account</span>
-                <h1>My Profile</h1>
-                <p>Manage your donor information and track the blood requests you submitted.</p>
+                <h1><?php echo $activeSection === 'requests' ? 'My Blood Requests' : 'My Profile'; ?></h1>
+                <p>
+                    <?php echo $activeSection === 'requests'
+                        ? 'Track the blood requests you submitted and their current status.'
+                        : 'Manage your donor information and keep your contact details updated.'; ?>
+                </p>
             </div>
         </section>
 
+        <!-- Profile content: only one section is shown at a time from the sidebar menu. -->
         <section class="profile-section">
-            <div class="profile-layout">
-                <article class="profile-panel">
+            <div class="profile-layout single-profile-panel">
+                <?php if ($activeSection === 'info'): ?>
+                <article class="profile-panel" id="profile-info">
                     <h2>My Information</h2>
 
                     <?php if ($success): ?>
@@ -132,7 +150,7 @@ $requests = $statement->fetchAll();
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST" class="auth-form">
+                    <form method="POST" action="profile.php?section=info" class="auth-form">
                         <input type="hidden" name="action" value="update_profile">
 
                         <div class="form-group">
@@ -175,8 +193,10 @@ $requests = $statement->fetchAll();
                         <button class="btn-primary auth-submit" type="submit">Update Profile</button>
                     </form>
                 </article>
+                <?php endif; ?>
 
-                <article class="profile-panel">
+                <?php if ($activeSection === 'requests'): ?>
+                <article class="profile-panel" id="my-requests">
                     <h2>My Blood Requests</h2>
 
                     <?php if (!$requests): ?>
@@ -196,17 +216,10 @@ $requests = $statement->fetchAll();
                                     <p>Needed: <?php echo htmlspecialchars($request['needed_date']); ?> | Bags: <?php echo htmlspecialchars($request['blood_bag']); ?></p>
                                 </div>
 
-                                <form method="POST" class="request-status-form">
-                                    <input type="hidden" name="action" value="update_request_status">
-                                    <input type="hidden" name="request_id" value="<?php echo (int) $request['id']; ?>">
-                                    <label for="status-<?php echo (int) $request['id']; ?>">Status</label>
-                                    <select id="status-<?php echo (int) $request['id']; ?>" name="status">
-                                        <?php foreach (['Pending', 'Fulfilled', 'Cancelled'] as $status): ?>
-                                            <option value="<?php echo $status; ?>" <?php echo $request['status'] === $status ? 'selected' : ''; ?>><?php echo $status; ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <button class="btn-search" type="submit">Update</button>
-                                </form>
+                                <div class="request-status-display">
+                                    <span>Status</span>
+                                    <strong><?php echo htmlspecialchars($request['status']); ?></strong>
+                                </div>
 
                                 <div class="donor-match-note">
                                     Donor responses will appear here after we add the donor response feature.
@@ -215,9 +228,11 @@ $requests = $statement->fetchAll();
                         <?php endforeach; ?>
                     </div>
                 </article>
+                <?php endif; ?>
             </div>
         </section>
     </main>
+    <script src="script.js"></script>
 </body>
 
 </html>

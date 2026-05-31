@@ -128,10 +128,15 @@ button {
 
 .profile-nav-link {
   align-items: center;
+  background: transparent;
+  border: 0;
   color: var(--dark);
+  cursor: pointer;
   display: inline-flex;
+  font-size: 1rem;
   font-weight: 600;
   gap: 8px;
+  padding: 0;
   text-decoration: none;
 }
 
@@ -151,6 +156,90 @@ button {
   height: 36px;
   justify-content: center;
   width: 36px;
+}
+
+.profile-icon.large {
+  font-size: 1rem;
+  height: 46px;
+  width: 46px;
+}
+
+.profile-menu-backdrop {
+  background: rgba(15, 23, 42, 0.32);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  transition: var(--transition);
+  z-index: 1090;
+}
+
+.profile-sidebar {
+  background: var(--white);
+  border-left: 1px solid var(--line);
+  box-shadow: -18px 0 38px rgba(29, 53, 87, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100vh;
+  max-width: 340px;
+  padding: 26px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transform: translateX(105%);
+  transition: transform 0.25s ease;
+  width: min(86vw, 340px);
+  z-index: 1100;
+}
+
+.profile-menu-open .profile-menu-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.profile-menu-open .profile-sidebar {
+  transform: translateX(0);
+}
+
+.profile-sidebar-head {
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 18px;
+}
+
+.profile-sidebar-head strong {
+  color: var(--dark);
+  display: block;
+}
+
+.profile-sidebar-head p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.profile-sidebar a {
+  border-radius: 6px;
+  color: var(--dark);
+  font-weight: 600;
+  padding: 12px 14px;
+  text-decoration: none;
+}
+
+.profile-sidebar a:hover {
+  background: var(--soft-red);
+  color: var(--primary);
+}
+
+.profile-sidebar .sidebar-logout {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  margin-top: auto;
+  text-align: center;
 }
 
 .btn-primary {
@@ -915,6 +1004,11 @@ h2 {
     width: 100%;
 }
 
+.single-profile-panel {
+    grid-template-columns: minmax(0, 780px);
+    justify-content: center;
+}
+
 .profile-panel {
     background: var(--white);
     border: 1px solid var(--line);
@@ -979,6 +1073,28 @@ h2 {
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     padding: 10px;
+}
+
+.request-status-display {
+    align-self: start;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    min-width: 170px;
+    padding: 14px;
+}
+
+.request-status-display span {
+    color: #64748b;
+    display: block;
+    font-size: 0.83rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.request-status-display strong {
+    color: var(--primary);
+    display: block;
 }
 
 .donor-match-note {

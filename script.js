@@ -1,13 +1,19 @@
 
 console.log("Script loaded successfully!");
 
+// Main page references: used by the single-page Home/About/Campaigns sections.
 const homePage = document.getElementById('home-page');
 const aboutPage = document.getElementById('about-page');
 const campaignPage = document.getElementById('campaign-content');
 const navLinks = document.querySelectorAll('.nav-links a');
 const linkButtons = document.querySelectorAll('[data-link]');
 
+// Profile sidebar references: used to open and close the account drawer.
+const profileMenuToggle = document.querySelector('[data-profile-menu-toggle]');
+const profileMenuCloseButtons = document.querySelectorAll('[data-profile-menu-close]');
 
+
+// Page switcher: hides and shows the homepage, about page, or campaigns content.
 async function showPage(pageId) {
     if (!homePage || !aboutPage || !campaignPage) return;
    
@@ -74,6 +80,25 @@ linkButtons.forEach((button) => {
     });
 });
 
+// Profile sidebar behavior: opens from the avatar/name and closes with backdrop or Escape.
+if (profileMenuToggle) {
+    profileMenuToggle.addEventListener('click', () => {
+        document.body.classList.toggle('profile-menu-open');
+    });
+}
+
+profileMenuCloseButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        document.body.classList.remove('profile-menu-open');
+    });
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        document.body.classList.remove('profile-menu-open');
+    }
+});
+
 const initialTarget = window.location.hash.substring(1);
 
 if (initialTarget === 'about' || initialTarget === 'campaigns') {
@@ -133,6 +158,7 @@ function initCampaignSliders() {
     });
 }
 
+// Blood request form validation: checks date and Bangladeshi phone format before submit.
 const requestForm = document.querySelector('[data-request-form]');
 
 if (requestForm) {
