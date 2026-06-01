@@ -1,0 +1,271 @@
+<?php
+// Public blood requests page: lists active requests and lets users filter them.
+session_start();
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/districts.php';
+
+$isLoggedIn = isset($_SESSION['user_id']);
+$currentUserId = $isLoggedIn ? (int) $_SESSION['user_id'] : 0;
+$profileInitial = $isLoggedIn ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
+
+$bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+$urgencies = ['Emergency', 'Within 24 hours', 'Scheduled'];
+$statusOptions = ['active', 'all', 'Pending', 'Donor Interested', 'Accepted', 'Fulfilled', 'Expired', 'Cancelled'];
+
+$selectedBloodGroup = trim($_GET['blood_group'] ?? '');
+$selectedDistrict = trim($_GET['district'] ?? '');
+$selectedUrgency = trim($_GET['urgency'] ?? '');
+$selectedStatus = trim($_GET['status'] ?? 'active');
+
+if (!in_array($selectedBloodGroup, $bloodGroups, true)) {
+    $selectedBloodGroup = '';
+}
+
+if (!in_array($selectedDistrict, $districts, true)) {
+    $selectedDistrict = '';
+}
+
+if (!in_array($selectedUrgency, $urgencies, true)) {
+    $selectedUrgency = '';
+}
+
+if (!in_array($selectedStatus, $statusOptions, true)) {
+    $selectedStatus = 'active';
+}
+
+// Automatic status maintenance: unanswered past-date requests are no longer pending.
+$pdo->exec("UPDATE blood_requests SET status = 'Expired' WHERE status = 'Pending' AND needed_date < CURDATE()");
+
+// Request query builder: keeps filters optional while still using prepared statements.
+$where = [];
+$params = [];
+
+if ($selectedStatus === 'active') {
+    $where[] = "br.status NOT IN ('Fulfilled', 'Expired', 'Cancelled')";
+} elseif ($selectedStatus !== 'all') {
+    $where[] = 'br.status = ?';
+    $params[] = $selectedStatus;
+}
+
+if ($selectedBloodGroup !== '') {
+    $where[] = 'br.blood_group = ?';
+    $params[] = $selectedBloodGroup;
+}
+
+if ($selectedDistrict !== '') {
+    $where[] = 'br.district = ?';
+    $params[] = $selectedDistrict;
+}
+
+if ($selectedUrgency !== '') {
+    $where[] = 'br.urgency = ?';
+    $params[] = $selectedUrgency;
+}
+
+$whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+
+$statement = $pdo->prepare(
+    "SELECT br.*, u.full_name AS requester_name
+     FROM blood_requests br
+     JOIN users u ON u.id = br.user_id
+     {$whereSql}
+     ORDER BY
+        CASE br.urgency
+            WHEN 'Emergency' THEN 1
+            WHEN 'Within 24 hours' THEN 2
+            ELSE 3
+        END,
+        br.needed_date ASC,
+        br.created_at DESC"
+);
+$statement->execute($params);
+$bloodRequests = $statement->fetchAll();
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Requests - Dream KUET</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Main navigation: public request list is available to guests and logged-in users. -->
+    <header>
+        <nav>
+            <div class="logo-area">
+                <img src="images/logo.png" alt="Dream logo" width="50">
+                <div class="brand-text">
+                    <span class="brand-name">DREAM</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.php#home">Home</a></li>
+                <li><a href="index.php#about">About Us</a></li>
+                <li><a href="index.php#search">Search Donor</a></li>
+                <li><a href="blood-requests.php" class="active-link">Blood Requests</a></li>
+                <li><a href="add-request.php">Add Blood Request</a></li>
+                <li><a href="index.php#campaigns">Campaigns</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <?php if ($isLoggedIn): ?>
+                    <button class="profile-nav-link" type="button" data-profile-menu-toggle aria-label="Open profile menu">
+                        <span class="profile-icon"><?php echo htmlspecialchars($profileInitial); ?></span>
+                        <span><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                    </button>
+                <?php else: ?>
+                    <button type="button" class="btn-register" data-link="register.php">Register</button>
+                    <button type="button" class="btn-login" data-link="login.php">Login</button>
+                <?php endif; ?>
+            </div>
+        </nav>
+    </header>
+
+    <?php if ($isLoggedIn): ?>
+        <!-- Profile sidebar: quick account links for logged-in users. -->
+        <div class="profile-menu-backdrop" data-profile-menu-close></div>
+        <aside class="profile-sidebar" aria-label="Profile menu">
+            <div class="profile-sidebar-head">
+                <span class="profile-icon large"><?php echo htmlspecialchars($profileInitial); ?></span>
+                <div>
+                    <strong><?php echo htmlspecialchars($_SESSION['user_name']); ?></strong>
+                    <p>Logged in</p>
+                </div>
+            </div>
+            <a href="profile.php?section=info">Profile Information</a>
+            <a href="profile.php?section=requests">My Blood Requests</a>
+            <a href="add-request.php">Add Blood Request</a>
+            <a class="sidebar-logout" href="logout.php">Logout</a>
+        </aside>
+    <?php endif; ?>
+
+    <main>
+        <!-- Page hero: introduces the public request board. -->
+        <section class="blood-requests-hero">
+            <div class="request-hero-content">
+                <span class="eyebrow">Request board</span>
+                <h1>Blood Requests</h1>
+                <p>Browse active blood needs, filter by group and location, and prepare to respond when donor acceptance is added.</p>
+            </div>
+        </section>
+
+        <!-- Filters: narrow down requests without exposing unsafe input to SQL. -->
+        <section class="blood-requests-section">
+            <form class="request-filter-form" method="GET">
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <select id="blood_group" name="blood_group">
+                        <option value="">All groups</option>
+                        <?php foreach ($bloodGroups as $group): ?>
+                            <option value="<?php echo $group; ?>" <?php echo $selectedBloodGroup === $group ? 'selected' : ''; ?>><?php echo $group; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <select id="district" name="district">
+                        <option value="">All districts</option>
+                        <?php foreach ($districts as $districtName): ?>
+                            <option value="<?php echo htmlspecialchars($districtName); ?>" <?php echo $selectedDistrict === $districtName ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($districtName); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="urgency">Urgency</label>
+                    <select id="urgency" name="urgency">
+                        <option value="">Any urgency</option>
+                        <?php foreach ($urgencies as $urgency): ?>
+                            <option value="<?php echo $urgency; ?>" <?php echo $selectedUrgency === $urgency ? 'selected' : ''; ?>><?php echo $urgency; ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status">
+                        <option value="active" <?php echo $selectedStatus === 'active' ? 'selected' : ''; ?>>Active only</option>
+                        <option value="all" <?php echo $selectedStatus === 'all' ? 'selected' : ''; ?>>All requests</option>
+                        <option value="Pending" <?php echo $selectedStatus === 'Pending' ? 'selected' : ''; ?>>Pending</option>
+                        <option value="Donor Interested" <?php echo $selectedStatus === 'Donor Interested' ? 'selected' : ''; ?>>Donor Interested</option>
+                        <option value="Accepted" <?php echo $selectedStatus === 'Accepted' ? 'selected' : ''; ?>>Accepted</option>
+                        <option value="Fulfilled" <?php echo $selectedStatus === 'Fulfilled' ? 'selected' : ''; ?>>Fulfilled</option>
+                        <option value="Expired" <?php echo $selectedStatus === 'Expired' ? 'selected' : ''; ?>>Expired</option>
+                        <option value="Cancelled" <?php echo $selectedStatus === 'Cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn-primary" type="submit">Apply Filters</button>
+                    <a class="btn-form-secondary" href="blood-requests.php">Reset</a>
+                </div>
+            </form>
+
+            <!-- Request cards: guests can browse, logged-in users can see contacts for coordination. -->
+            <?php if (!$bloodRequests): ?>
+                <div class="empty-state requests-empty">
+                    <p>No blood requests found for the selected filters.</p>
+                    <a class="btn-primary link-button" href="add-request.php">Add Blood Request</a>
+                </div>
+            <?php else: ?>
+                <div class="public-request-grid">
+                    <?php foreach ($bloodRequests as $request): ?>
+                        <?php
+                            $isOwnRequest = $isLoggedIn && (int) $request['user_id'] === $currentUserId;
+                            $isExpired = $request['status'] === 'Expired';
+                        ?>
+                        <article class="public-request-card">
+                            <div class="request-card-head">
+                                <span class="blood-chip"><?php echo htmlspecialchars($request['blood_group']); ?></span>
+                                <span class="request-status-pill <?php echo $isExpired ? 'expired' : ''; ?>">
+                                    <?php echo $isExpired ? 'Past date' : htmlspecialchars($request['status']); ?>
+                                </span>
+                            </div>
+
+                            <h2><?php echo htmlspecialchars($request['patient_name']); ?></h2>
+                            <div class="request-meta-list">
+                                <span><?php echo htmlspecialchars($request['blood_bag']); ?> bag needed</span>
+                                <span><?php echo htmlspecialchars($request['urgency']); ?></span>
+                                <span><?php echo htmlspecialchars($request['needed_date']); ?></span>
+                            </div>
+
+                            <p class="request-location">
+                                <?php echo htmlspecialchars($request['hospital']); ?>, <?php echo htmlspecialchars($request['district']); ?>
+                            </p>
+                            <p><?php echo htmlspecialchars($request['address']); ?></p>
+
+                            <?php if ($request['details']): ?>
+                                <p class="request-details"><?php echo htmlspecialchars($request['details']); ?></p>
+                            <?php endif; ?>
+
+                            <div class="request-contact-box">
+                                <?php if (!$isLoggedIn): ?>
+                                    <p>Login to view contact details and respond later.</p>
+                                    <a class="btn-form-secondary" href="login.php">Login</a>
+                                <?php elseif ($isOwnRequest): ?>
+                                    <p>This is your request. Track donor responses from your profile.</p>
+                                    <a class="btn-form-secondary" href="profile.php?section=requests">View My Requests</a>
+                                <?php else: ?>
+                                    <p><strong>Requester:</strong> <?php echo htmlspecialchars($request['requester_name']); ?></p>
+                                    <p><strong>Contact:</strong> <?php echo htmlspecialchars($request['contact_name']); ?>, <?php echo htmlspecialchars($request['contact_phone']); ?></p>
+                                    <button class="btn-primary" type="button" disabled>Donate action coming next</button>
+                                <?php endif; ?>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

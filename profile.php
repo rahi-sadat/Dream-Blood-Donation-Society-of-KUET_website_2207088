@@ -53,6 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Automatic status maintenance: unanswered past-date requests are no longer pending.
+$pdo->exec("UPDATE blood_requests SET status = 'Expired' WHERE status = 'Pending' AND needed_date < CURDATE()");
+
 // Load current user information for the profile form and sidebar.
 $statement = $pdo->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
 $statement->execute([$userId]);
@@ -88,6 +91,7 @@ $requests = $statement->fetchAll();
                 <li><a href="index.php#home">Home</a></li>
                 <li><a href="index.php#about">About Us</a></li>
                 <li><a href="index.php#search">Search Donor</a></li>
+                <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="index.php#campaigns">Campaigns</a></li>
             </ul>
@@ -113,6 +117,7 @@ $requests = $statement->fetchAll();
         </div>
         <a href="profile.php?section=info">Profile Information</a>
         <a href="profile.php?section=requests">My Blood Requests</a>
+        <a href="blood-requests.php">Blood Requests</a>
         <a href="add-request.php">Add Blood Request</a>
         <a class="sidebar-logout" href="logout.php">Logout</a>
     </aside>
@@ -216,13 +221,17 @@ $requests = $statement->fetchAll();
                                     <p>Needed: <?php echo htmlspecialchars($request['needed_date']); ?> | Bags: <?php echo htmlspecialchars($request['blood_bag']); ?></p>
                                 </div>
 
-                                <div class="request-status-display">
+                                <div class="request-status-display <?php echo $request['status'] === 'Expired' ? 'expired' : ''; ?>">
                                     <span>Status</span>
                                     <strong><?php echo htmlspecialchars($request['status']); ?></strong>
                                 </div>
 
                                 <div class="donor-match-note">
-                                    Donor responses will appear here after we add the donor response feature.
+                                    <?php if ($request['status'] === 'Expired'): ?>
+                                        This request date has passed without a donor response.
+                                    <?php else: ?>
+                                        Donor responses will appear here after we add the donor response feature.
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>

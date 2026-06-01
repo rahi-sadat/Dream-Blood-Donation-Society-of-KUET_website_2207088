@@ -31,6 +31,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#search">Search Donor</a></li>
+                <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="#campaigns">Campaigns</a></li>
             </ul>
@@ -65,6 +66,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>
             <a class="sidebar-logout" href="logout.php">Logout</a>
         </aside>
@@ -210,6 +212,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <div class="footer-column">
                 <h4>Important Links</h4>
                 <a href="#home">Home</a>
+                <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
                 <a href="#search">Search Donors</a>
                 <a href="#about">About Us</a>

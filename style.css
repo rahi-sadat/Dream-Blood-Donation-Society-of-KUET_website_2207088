@@ -1097,6 +1097,10 @@ h2 {
     display: block;
 }
 
+.request-status-display.expired strong {
+    color: #64748b;
+}
+
 .donor-match-note {
     background: #f8fafc;
     border: 1px solid var(--line);
@@ -1117,6 +1121,148 @@ h2 {
 .empty-state p {
     color: #475569;
     margin-bottom: 14px;
+}
+
+/* Public Blood Requests Page */
+.blood-requests-hero {
+    align-items: flex-start;
+    background:
+        linear-gradient(120deg, rgba(230, 57, 70, 0.12), rgba(255, 255, 255, 0.96)),
+        var(--soft-red);
+    padding: 90px 8% 55px;
+    text-align: left;
+}
+
+.blood-requests-hero h1 {
+    color: var(--dark);
+    font-size: 2.8rem;
+    line-height: 1.15;
+    margin: 8px 0 12px;
+}
+
+.blood-requests-section {
+    align-items: stretch;
+    background: var(--gray-bg);
+    padding: 55px 8% 85px;
+    text-align: left;
+}
+
+.request-filter-form {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(29, 53, 87, 0.08);
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(4, minmax(150px, 1fr)) auto;
+    margin: 0 auto 28px;
+    max-width: 1180px;
+    padding: 22px;
+    width: 100%;
+}
+
+.filter-actions {
+    align-items: flex-end;
+    display: flex;
+    gap: 10px;
+}
+
+.public-request-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0 auto;
+    max-width: 1180px;
+    width: 100%;
+}
+
+.public-request-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(29, 53, 87, 0.08);
+    padding: 24px;
+}
+
+.request-card-head,
+.request-meta-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.request-card-head {
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.public-request-card h2 {
+    color: var(--dark);
+    font-size: 1.35rem;
+    margin-bottom: 10px;
+}
+
+.public-request-card p {
+    color: #475569;
+    margin: 8px 0;
+}
+
+.request-meta-list span {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: #334155;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+}
+
+.request-status-pill {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    border-radius: 999px;
+    color: #15803d;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 5px 11px;
+}
+
+.request-status-pill.expired {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #64748b;
+}
+
+.request-location {
+    color: var(--dark);
+    font-weight: 600;
+}
+
+.request-details {
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.request-contact-box {
+    background: var(--soft-red);
+    border: 1px solid #fecdd3;
+    border-radius: 8px;
+    margin-top: 18px;
+    padding: 14px;
+}
+
+.request-contact-box .btn-primary[disabled] {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+}
+
+.requests-empty {
+    margin: 0 auto;
+    max-width: 760px;
+    width: 100%;
 }
 
 @media (max-width: 720px) {
@@ -1156,6 +1302,16 @@ h2 {
     .profile-layout,
     .profile-request-card {
         grid-template-columns: 1fr;
+    }
+
+    .request-filter-form,
+    .public-request-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 }
 
