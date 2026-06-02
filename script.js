@@ -1,4 +1,4 @@
-
+// Local PHP server command: D:\xampp\php\php.exe -S localhost:8000
 console.log("Script loaded successfully!");
 
 // Main page references: used by the single-page Home/About/Campaigns sections.

@@ -30,7 +30,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
-                <li><a href="#search">Search Donor</a></li>
+                <li><a href="find-donors.php">Search Donor</a></li>
                 <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="#campaigns">Campaigns</a></li>
@@ -66,6 +66,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>
             <a class="sidebar-logout" href="logout.php">Logout</a>
@@ -89,11 +90,11 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
 
        <section id="search">
     <h2>Search Donors</h2>
-    <div class="search-container">
+    <form class="search-container" action="find-donors.php" method="GET">
         <!-- Blood Group -->
         <div class="search-group">
             <label>Blood Group</label>
-            <select>
+            <select name="blood_group">
                 <option value="">Select</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
@@ -109,7 +110,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
         <!-- District -->
         <div class="search-group">
             <label>District</label>
-            <select>
+            <select name="district">
                 <option value="">Select</option>
                 <?php foreach ($districts as $districtName): ?>
                     <option value="<?php echo htmlspecialchars($districtName); ?>"><?php echo htmlspecialchars($districtName); ?></option>
@@ -117,27 +118,11 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </select>
         </div>
 
-        <!-- Date -->
-        <div class="search-group">
-            <label>Date of Blood Donation</label>
-            <input type="date">
-        </div>
-
-        <!-- Donor Type -->
-        <div class="search-group">
-            <label>Donor Type</label>
-            <select>
-                <option value="all">All</option>
-                <option value="voluntary">Voluntary</option>
-                <option value="professional">Professional</option>
-            </select>
-        </div>
-
         <!-- Search Button -->
         <div class="search-group action-group">
-            <button class="btn-search">Search</button>
+            <button class="btn-search" type="submit">Search</button>
         </div>
-    </div>
+    </form>
 </section>
 
         <section id="about">
@@ -212,6 +197,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <div class="footer-column">
                 <h4>Important Links</h4>
                 <a href="#home">Home</a>
+                <a href="find-donors.php">Search Donors</a>
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
                 <a href="#search">Search Donors</a>

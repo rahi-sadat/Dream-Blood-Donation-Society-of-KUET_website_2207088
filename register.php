@@ -14,6 +14,9 @@ $email = '';
 $phone = '';
 $bloodGroup = '';
 $district = '';
+$isDonor = '1';
+$availableToDonate = '1';
+$lastDonationDate = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fullName = trim($_POST['full_name'] ?? '');
@@ -21,6 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = trim($_POST['phone'] ?? '');
     $bloodGroup = trim($_POST['blood_group'] ?? '');
     $district = trim($_POST['district'] ?? '');
+    $isDonor = isset($_POST['is_donor']) ? '1' : '0';
+    $availableToDonate = isset($_POST['available_to_donate']) ? '1' : '0';
+    $lastDonationDate = trim($_POST['last_donation_date'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -44,6 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Please select a valid district.';
     }
 
+    if ($lastDonationDate !== '' && $lastDonationDate > date('Y-m-d')) {
+        $errors[] = 'Last donation date cannot be in the future.';
+    }
+
     if (strlen($password) < 6) {
         $errors[] = 'Password must be at least 6 characters.';
     }
@@ -61,10 +71,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
             $statement = $pdo->prepare(
-                'INSERT INTO users (full_name, email, phone, blood_group, district, password_hash)
-                 VALUES (?, ?, ?, ?, ?, ?)'
+                'INSERT INTO users
+                    (full_name, email, phone, blood_group, district, is_donor, available_to_donate, last_donation_date, password_hash)
+                 VALUES
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?)'
             );
-            $statement->execute([$fullName, $email, $phone, $bloodGroup, $district, $passwordHash]);
+            $statement->execute([
+                $fullName,
+                $email,
+                $phone,
+                $bloodGroup,
+                $district,
+                (int) $isDonor,
+                (int) $availableToDonate,
+                $lastDonationDate !== '' ? $lastDonationDate : null,
+                $passwordHash
+            ]);
 
             $_SESSION['user_id'] = (int) $pdo->lastInsertId();
             $_SESSION['user_name'] = $fullName;
@@ -117,6 +139,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($phone); ?>" pattern="01[0-9]{9}" required>
                 </div>
 
+                <div class="auth-check-grid">
+                    <label class="check-row">
+                        <input type="checkbox" name="is_donor" value="1" <?php echo $isDonor === '1' ? 'checked' : ''; ?>>
+                        <span>Register me as a blood donor</span>
+                    </label>
+
+                    <label class="check-row">
+                        <input type="checkbox" name="available_to_donate" value="1" <?php echo $availableToDonate === '1' ? 'checked' : ''; ?>>
+                        <span>I am currently available to donate</span>
+                    </label>
+                </div>
+
                 <div class="form-grid compact-grid">
                     <div class="form-group">
                         <label for="blood_group">Blood Group</label>
@@ -139,6 +173,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <?php endforeach; ?>
                         </select>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_donation_date">Last Donation Date</label>
+                    <input type="date" id="last_donation_date" name="last_donation_date" value="<?php echo htmlspecialchars($lastDonationDate); ?>">
                 </div>
 
                 <div class="form-group">

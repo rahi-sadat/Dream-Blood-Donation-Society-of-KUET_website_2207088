@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(20) NOT NULL,
     blood_group VARCHAR(5) NOT NULL,
     district VARCHAR(80) NOT NULL,
+    is_donor TINYINT(1) NOT NULL DEFAULT 1,
+    available_to_donate TINYINT(1) NOT NULL DEFAULT 1,
+    last_donation_date DATE NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

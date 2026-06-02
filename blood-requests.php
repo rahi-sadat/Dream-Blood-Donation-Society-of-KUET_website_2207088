@@ -105,7 +105,7 @@ $bloodRequests = $statement->fetchAll();
             <ul class="nav-links">
                 <li><a href="index.php#home">Home</a></li>
                 <li><a href="index.php#about">About Us</a></li>
-                <li><a href="index.php#search">Search Donor</a></li>
+                <li><a href="find-donors.php">Search Donor</a></li>
                 <li><a href="blood-requests.php" class="active-link">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="index.php#campaigns">Campaigns</a></li>
@@ -138,6 +138,7 @@ $bloodRequests = $statement->fetchAll();
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <a href="find-donors.php">Search Donors</a>
             <a href="add-request.php">Add Blood Request</a>
             <a class="sidebar-logout" href="logout.php">Logout</a>
         </aside>

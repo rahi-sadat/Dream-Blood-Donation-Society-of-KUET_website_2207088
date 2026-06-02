@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone = trim($_POST['phone'] ?? '');
         $bloodGroup = trim($_POST['blood_group'] ?? '');
         $district = trim($_POST['district'] ?? '');
+        $isDonor = isset($_POST['is_donor']) ? 1 : 0;
+        $availableToDonate = isset($_POST['available_to_donate']) ? 1 : 0;
+        $lastDonationDate = trim($_POST['last_donation_date'] ?? '');
 
         if ($fullName === '' || $phone === '' || $bloodGroup === '' || $district === '') {
             $errors[] = 'Please fill all profile fields.';
@@ -42,11 +45,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Please select a valid district.';
         }
 
+        if ($lastDonationDate !== '' && $lastDonationDate > date('Y-m-d')) {
+            $errors[] = 'Last donation date cannot be in the future.';
+        }
+
         if (!$errors) {
             $statement = $pdo->prepare(
-                'UPDATE users SET full_name = ?, phone = ?, blood_group = ?, district = ? WHERE id = ?'
+                'UPDATE users
+                 SET full_name = ?, phone = ?, blood_group = ?, district = ?, is_donor = ?, available_to_donate = ?, last_donation_date = ?
+                 WHERE id = ?'
             );
-            $statement->execute([$fullName, $phone, $bloodGroup, $district, $userId]);
+            $statement->execute([
+                $fullName,
+                $phone,
+                $bloodGroup,
+                $district,
+                $isDonor,
+                $availableToDonate,
+                $lastDonationDate !== '' ? $lastDonationDate : null,
+                $userId
+            ]);
             $_SESSION['user_name'] = $fullName;
             $success = 'Profile updated successfully.';
         }
@@ -90,7 +108,7 @@ $requests = $statement->fetchAll();
             <ul class="nav-links">
                 <li><a href="index.php#home">Home</a></li>
                 <li><a href="index.php#about">About Us</a></li>
-                <li><a href="index.php#search">Search Donor</a></li>
+                <li><a href="find-donors.php">Search Donor</a></li>
                 <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
                 <li><a href="index.php#campaigns">Campaigns</a></li>
@@ -117,6 +135,7 @@ $requests = $statement->fetchAll();
         </div>
         <a href="profile.php?section=info">Profile Information</a>
         <a href="profile.php?section=requests">My Blood Requests</a>
+        <a href="find-donors.php">Search Donors</a>
         <a href="blood-requests.php">Blood Requests</a>
         <a href="add-request.php">Add Blood Request</a>
         <a class="sidebar-logout" href="logout.php">Logout</a>
@@ -173,6 +192,18 @@ $requests = $statement->fetchAll();
                             <input type="tel" id="phone" name="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" pattern="01[0-9]{9}" required>
                         </div>
 
+                        <div class="auth-check-grid">
+                            <label class="check-row">
+                                <input type="checkbox" name="is_donor" value="1" <?php echo (int) $user['is_donor'] === 1 ? 'checked' : ''; ?>>
+                                <span>Show me in donor search</span>
+                            </label>
+
+                            <label class="check-row">
+                                <input type="checkbox" name="available_to_donate" value="1" <?php echo (int) $user['available_to_donate'] === 1 ? 'checked' : ''; ?>>
+                                <span>I am currently available to donate</span>
+                            </label>
+                        </div>
+
                         <div class="form-grid compact-grid">
                             <div class="form-group">
                                 <label for="blood_group">Blood Group</label>
@@ -193,6 +224,11 @@ $requests = $statement->fetchAll();
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last_donation_date">Last Donation Date</label>
+                            <input type="date" id="last_donation_date" name="last_donation_date" value="<?php echo htmlspecialchars($user['last_donation_date'] ?? ''); ?>">
                         </div>
 
                         <button class="btn-primary auth-submit" type="submit">Update Profile</button>
