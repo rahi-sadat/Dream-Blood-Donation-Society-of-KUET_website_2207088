@@ -185,3 +185,12 @@ if (requestForm) {
         }
     });
 }
+
+// Donate action confirmation: the server still performs the real eligibility checks.
+document.querySelectorAll('[data-donate-form]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        if (!confirm('Send your donor response for this blood request?')) {
+            event.preventDefault();
+        }
+    });
+});

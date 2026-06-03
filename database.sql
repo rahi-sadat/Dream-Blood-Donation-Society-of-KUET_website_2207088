@@ -37,3 +37,14 @@ CREATE TABLE IF NOT EXISTS blood_requests (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS donation_responses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    donor_id INT NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'Interested',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_request_donor (request_id, donor_id),
+    FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE CASCADE,
+    FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE
+);

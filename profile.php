@@ -16,6 +16,20 @@ $activeSection = in_array($activeSection, ['info', 'requests'], true) ? $activeS
 $errors = [];
 $success = '';
 
+// Response table setup: keeps existing local databases compatible after this feature is added.
+$pdo->exec(
+    "CREATE TABLE IF NOT EXISTS donation_responses (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        request_id INT NOT NULL,
+        donor_id INT NOT NULL,
+        status VARCHAR(30) NOT NULL DEFAULT 'Interested',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_request_donor (request_id, donor_id),
+        FOREIGN KEY (request_id) REFERENCES blood_requests(id) ON DELETE CASCADE,
+        FOREIGN KEY (donor_id) REFERENCES users(id) ON DELETE CASCADE
+    )"
+);
+
 // Profile update handler: saves edited account information.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
@@ -83,6 +97,24 @@ $user = $statement->fetch();
 $statement = $pdo->prepare('SELECT * FROM blood_requests WHERE user_id = ? ORDER BY created_at DESC');
 $statement->execute([$userId]);
 $requests = $statement->fetchAll();
+
+$donorResponsesByRequest = [];
+if ($requests) {
+    $requestIds = array_map('intval', array_column($requests, 'id'));
+    $placeholders = implode(',', array_fill(0, count($requestIds), '?'));
+    $statement = $pdo->prepare(
+        "SELECT dr.request_id, dr.status, dr.created_at, u.full_name, u.phone, u.email, u.blood_group, u.district, u.last_donation_date
+         FROM donation_responses dr
+         JOIN users u ON u.id = dr.donor_id
+         WHERE dr.request_id IN ({$placeholders})
+         ORDER BY dr.created_at DESC"
+    );
+    $statement->execute($requestIds);
+
+    foreach ($statement->fetchAll() as $response) {
+        $donorResponsesByRequest[(int) $response['request_id']][] = $response;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -265,8 +297,26 @@ $requests = $statement->fetchAll();
                                 <div class="donor-match-note">
                                     <?php if ($request['status'] === 'Expired'): ?>
                                         This request date has passed without a donor response.
+                                    <?php elseif (!empty($donorResponsesByRequest[(int) $request['id']])): ?>
+                                        <strong>Interested donors</strong>
+                                        <div class="donor-response-list">
+                                            <?php foreach ($donorResponsesByRequest[(int) $request['id']] as $response): ?>
+                                                <div class="donor-response-item">
+                                                    <div>
+                                                        <strong><?php echo htmlspecialchars($response['full_name']); ?></strong>
+                                                        <p><?php echo htmlspecialchars($response['blood_group']); ?> | <?php echo htmlspecialchars($response['district']); ?></p>
+                                                        <p>Last donation: <?php echo $response['last_donation_date'] ? htmlspecialchars($response['last_donation_date']) : 'Not provided'; ?></p>
+                                                    </div>
+                                                    <div>
+                                                        <span><?php echo htmlspecialchars($response['status']); ?></span>
+                                                        <p><?php echo htmlspecialchars($response['phone']); ?></p>
+                                                        <p><?php echo htmlspecialchars($response['email']); ?></p>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     <?php else: ?>
-                                        Donor responses will appear here after we add the donor response feature.
+                                        No donor has responded yet.
                                     <?php endif; ?>
                                 </div>
                             </div>

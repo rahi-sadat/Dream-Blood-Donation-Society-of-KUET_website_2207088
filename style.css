@@ -1134,6 +1134,33 @@ h2 {
     padding: 12px;
 }
 
+.donor-response-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.donor-response-item {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) minmax(160px, auto);
+    padding: 12px;
+}
+
+.donor-response-item strong {
+    color: var(--dark);
+}
+
+.donor-response-item span {
+    color: var(--primary);
+    display: block;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
 .empty-state {
     background: #f8fafc;
     border: 1px solid var(--line);
@@ -1168,6 +1195,23 @@ h2 {
     background: var(--gray-bg);
     padding: 55px 8% 85px;
     text-align: left;
+}
+
+.donation-alert {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    color: #166534;
+    margin: 0 auto 18px;
+    max-width: 1180px;
+    padding: 13px 16px;
+    width: 100%;
+}
+
+.donation-alert.error {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #9f1239;
 }
 
 .request-filter-form {
@@ -1282,6 +1326,10 @@ h2 {
     transform: none;
 }
 
+.donate-action-form {
+    margin-top: 10px;
+}
+
 .requests-empty {
     margin: 0 auto;
     max-width: 760px;
@@ -1385,7 +1433,8 @@ h2 {
     }
 
     .profile-layout,
-    .profile-request-card {
+    .profile-request-card,
+    .donor-response-item {
         grid-template-columns: 1fr;
     }
 
