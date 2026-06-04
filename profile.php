@@ -327,6 +327,35 @@ if ($requests) {
             </div>
         </section>
     </main>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img src="images/logo.png" alt="Dream Logo" width="60">
+                <h3>DREAM KUET</h3>
+                <p>An automated blood service connecting seekers with donors in a moment.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Important Links</h4>
+                <a href="index.php#home">Home</a>
+                <a href="find-donors.php">Search Donors</a>
+                <a href="blood-requests.php">Blood Requests</a>
+                <a href="add-request.php">Add Blood Request</a>
+                <a href="index.php#about">About Us</a>
+            </div>
+            <div class="footer-column">
+                <h4>About Blood</h4>
+                <a href="#">What is blood?</a>
+                <a href="#">Who can donate?</a>
+                <a href="#">Blood Groups</a>
+                <a href="#">FAQs</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Dream-Voluntary Blood Donation Society of KUET. All Rights Reserved.</p>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 

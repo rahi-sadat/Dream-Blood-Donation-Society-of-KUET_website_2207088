@@ -126,7 +126,8 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
 </section>
 
         <section id="about">
-            <h2>About Dream </h2>
+            <span class="eyebrow">About us</span>
+            <h2>About Dream</h2>
             <p>Dream is a voluntary blood donation society at Khulna University of Engineering & Technology. We are
                 dedicated to promoting voluntary donation, managing emergency supplies, and creating awareness through
                 our regular campaigns.</p>
@@ -135,7 +136,9 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
 
         <section id="requests">
             <div class="section-title">
-                <h2>Emergency Blood Requests</h2>
+                <button class="emergency-request-button" type="button" data-link="add-request.php">
+                    Emergency Blood Request
+                </button>
                 <span class="pulse-icon"></span>
             </div>
             <div class="request-grid">
@@ -146,37 +149,51 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                         
         <div id="about-page" style="display: none;">
         <section class="about-hero">
-            <h1>About Us</h1>
-            <p>Know about Dream. What, how, and why.</p>
-           
+            <div class="about-hero-inner">
+                <span class="eyebrow">DREAM KUET</span>
+                <h1>About Us</h1>
+                <p>Dream connects voluntary blood donors with people who need urgent support around KUET and nearby communities.</p>
+                <div class="about-hero-actions">
+                    <button class="btn-primary" type="button" data-link="add-request.php">Request Blood</button>
+                    <button class="btn-secondary" type="button" data-link="find-donors.php">Find Donors</button>
+                </div>
+            </div>
         </section>
 
         <section class="about-details">
             <div class="about-grid">
                 <div class="left-col">
-                    <p>Dream is a voluntary blood donation society. Dream have a vision for the world where no one will die in need of blood. Dream, managed by the students of KUET, works to encourage the humane activity by providing blood donors. Dream works on the motto of "Donate Blood, Save Life".</p>
+                    <span class="eyebrow">Our story</span>
+                    <h2>Donate Blood, Save Life</h2>
+                    <p>Dream is a voluntary blood donation society managed by KUET students. We work to encourage safe, humane blood donation and help people find donors when every minute matters.</p>
                     <h3>Why Dream?</h3>
                     <p>
-        In many critical medical emergencies, the difference between life and death is often a single bag of blood. 
-        While the demand is constant, the supply often falls short due to a lack of centralized communication. 
-        <strong>Dream</strong> was established at KUET to solve this very problem.
-    </p>
-    <p>
-        We act as a digital bridge, connecting voluntary blood donors with those in urgent need. 
-        By maintaining an active database of student and local donors, we ensure that help is always just a click away.
-    </p>
+                        In many critical medical emergencies, the difference between life and death is often a single bag of blood.
+                        While the demand is constant, the supply often falls short because communication is scattered.
+                        <strong>Dream</strong> was established at KUET to solve this problem.
+                    </p>
+                    <p>
+                        We act as a digital bridge, connecting voluntary blood donors with those in urgent need.
+                        By maintaining an active database of student and local donors, help stays close and reachable.
+                    </p>
                 </div>
                 <div class="right-col">
-                    <h3>Vision</h3>
-                    <p>Ensuring no more death just for the need of blood.</p>
-                    <h3>Mission</h3>
-                    <p>Connecting blood searchers with voluntary blood donors in a moment with the use of technology.</p>
-                    <h3>Objectives</h3>
-                    <ul>
-                        <li>Encouraging voluntary blood donation</li>
-                        <li>Creating awareness about safe blood transfer</li>
-                        <li>Connecting voluntary blood donors via SMS or email</li>
-                    </ul>
+                    <div class="about-info-card">
+                        <h3>Vision</h3>
+                        <p>Ensuring no more death just for the need of blood.</p>
+                    </div>
+                    <div class="about-info-card">
+                        <h3>Mission</h3>
+                        <p>Connecting blood searchers with voluntary blood donors quickly through technology.</p>
+                    </div>
+                    <div class="about-info-card">
+                        <h3>Objectives</h3>
+                        <ul>
+                            <li>Encouraging voluntary blood donation</li>
+                            <li>Creating awareness about safe blood transfer</li>
+                            <li>Connecting voluntary blood donors with urgent requests</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
