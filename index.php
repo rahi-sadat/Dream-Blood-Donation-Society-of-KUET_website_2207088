@@ -217,7 +217,6 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                 <a href="find-donors.php">Search Donors</a>
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
-                <a href="#search">Search Donors</a>
                 <a href="#about">About Us</a>
             </div>
             <div class="footer-column">

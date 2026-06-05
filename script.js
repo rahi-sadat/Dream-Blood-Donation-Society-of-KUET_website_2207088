@@ -5,12 +5,14 @@ console.log("Script loaded successfully!");
 const homePage = document.getElementById('home-page');
 const aboutPage = document.getElementById('about-page');
 const campaignPage = document.getElementById('campaign-content');
-const navLinks = document.querySelectorAll('.nav-links a');
+const pageLinks = document.querySelectorAll('.nav-links a, .main-footer a');
 const linkButtons = document.querySelectorAll('[data-link]');
 const bloodAnswerButtons = document.querySelectorAll('[data-blood-answer]');
 const bloodAnswerPanel = document.querySelector('[data-blood-answer-panel]');
 const bloodAnswerTitle = document.querySelector('[data-blood-answer-title]');
 const bloodAnswerText = document.querySelector('[data-blood-answer-text]');
+let campaignContentCache = '';
+let campaignContentPromise = null;
 
 // Profile sidebar references: used to open and close the account drawer.
 const profileMenuToggle = document.querySelector('[data-profile-menu-toggle]');
@@ -33,11 +35,10 @@ async function showPage(pageId) {
     else if (pageId === 'campaigns') {
         
         try {
-            const response = await fetch('campaigns.html');
-            if (!response.ok) throw new Error('Campaign file not found');
-            const data = await response.text();
-            
-            campaignPage.innerHTML = data;
+            const data = await loadCampaignContent();
+            if (campaignPage.innerHTML !== data) {
+                campaignPage.innerHTML = data;
+            }
             campaignPage.style.display = 'block';
             initCampaignSliders();
         } catch (error) {
@@ -51,14 +52,44 @@ async function showPage(pageId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function loadCampaignContent() {
+    if (campaignContentCache) {
+        return Promise.resolve(campaignContentCache);
+    }
 
-navLinks.forEach(link => {
+    if (!campaignContentPromise) {
+        campaignContentPromise = fetch('campaigns.html')
+            .then((response) => {
+                if (!response.ok) throw new Error('Campaign file not found');
+                return response.text();
+            })
+            .then((data) => {
+                campaignContentCache = data;
+                return data;
+            })
+            .catch((error) => {
+                campaignContentPromise = null;
+                throw error;
+            });
+    }
+
+    return campaignContentPromise;
+}
+
+if (campaignPage) {
+    loadCampaignContent().catch((error) => {
+        console.error("Error preloading campaigns:", error);
+    });
+}
+
+
+pageLinks.forEach(link => {
     link.addEventListener('click', async (e) => {
        const href = link.getAttribute('href');
         console.log("Link clicked:", href); 
         
       
-        if (href.startsWith('#')) {
+        if (href && href.startsWith('#')) {
             e.preventDefault();
             
            
