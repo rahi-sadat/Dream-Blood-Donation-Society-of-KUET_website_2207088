@@ -5,6 +5,7 @@ console.log("Script loaded successfully!");
 const homePage = document.getElementById('home-page');
 const aboutPage = document.getElementById('about-page');
 const campaignPage = document.getElementById('campaign-content');
+const navLinks = document.querySelectorAll('.nav-links a');
 const pageLinks = document.querySelectorAll('.nav-links a, .main-footer a');
 const linkButtons = document.querySelectorAll('[data-link]');
 const bloodAnswerButtons = document.querySelectorAll('[data-blood-answer]');
@@ -23,6 +24,7 @@ const profileMenuCloseButtons = document.querySelectorAll('[data-profile-menu-cl
 async function showPage(pageId) {
     if (!homePage || !aboutPage || !campaignPage) return;
     resetBloodAnswerPanel();
+    setActiveNavLink(pageId);
    
     homePage.style.display = 'none';
     aboutPage.style.display = 'none';
@@ -43,6 +45,7 @@ async function showPage(pageId) {
             initCampaignSliders();
         } catch (error) {
             console.error("Error loading campaigns:", error);
+            setActiveNavLink('home');
             homePage.style.display = 'block'; 
         }
     } else {
@@ -50,6 +53,15 @@ async function showPage(pageId) {
     }
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setActiveNavLink(pageId) {
+    const activePage = pageId === 'campaigns' ? 'campaigns' : pageId === 'about' ? 'about' : 'home';
+
+    navLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        link.classList.toggle('active-link', href === `#${activePage}`);
+    });
 }
 
 function loadCampaignContent() {
@@ -183,6 +195,8 @@ const initialTarget = window.location.hash.substring(1);
 
 if (initialTarget === 'about' || initialTarget === 'campaigns') {
     showPage(initialTarget);
+} else if (homePage && aboutPage && campaignPage) {
+    setActiveNavLink('home');
 }
 
 
