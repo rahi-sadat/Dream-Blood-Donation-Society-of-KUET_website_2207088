@@ -468,6 +468,45 @@ h2 {
   padding-left: 5px;
 }
 
+.footer-info-link {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--white);
+  font-size: 0.9rem;
+  opacity: 0.8;
+  padding: 0;
+  text-align: left;
+}
+
+.footer-info-link:hover,
+.footer-info-link.active {
+  opacity: 1;
+  padding-left: 5px;
+  transform: none;
+}
+
+.footer-answer-card {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 8px;
+  margin-top: 8px;
+  padding: 14px;
+}
+
+.footer-answer-card h5 {
+  color: var(--white);
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+
+.footer-answer-card p {
+  color: var(--white);
+  font-size: 0.84rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   padding-top: 20px;

@@ -7,6 +7,10 @@ const aboutPage = document.getElementById('about-page');
 const campaignPage = document.getElementById('campaign-content');
 const navLinks = document.querySelectorAll('.nav-links a');
 const linkButtons = document.querySelectorAll('[data-link]');
+const bloodAnswerButtons = document.querySelectorAll('[data-blood-answer]');
+const bloodAnswerPanel = document.querySelector('[data-blood-answer-panel]');
+const bloodAnswerTitle = document.querySelector('[data-blood-answer-title]');
+const bloodAnswerText = document.querySelector('[data-blood-answer-text]');
 
 // Profile sidebar references: used to open and close the account drawer.
 const profileMenuToggle = document.querySelector('[data-profile-menu-toggle]');
@@ -16,6 +20,7 @@ const profileMenuCloseButtons = document.querySelectorAll('[data-profile-menu-cl
 // Page switcher: hides and shows the homepage, about page, or campaigns content.
 async function showPage(pageId) {
     if (!homePage || !aboutPage || !campaignPage) return;
+    resetBloodAnswerPanel();
    
     homePage.style.display = 'none';
     aboutPage.style.display = 'none';
@@ -77,6 +82,50 @@ navLinks.forEach(link => {
 linkButtons.forEach((button) => {
     button.addEventListener('click', () => {
         window.location.href = button.dataset.link;
+    });
+});
+
+const bloodAnswers = {
+    what: {
+        title: 'What is blood?',
+        text: 'Blood carries oxygen, nutrients, hormones, and immune cells throughout the body. It also helps control bleeding and supports recovery during illness, surgery, and emergencies.'
+    },
+    donate: {
+        title: 'Who can donate?',
+        text: 'A healthy adult can usually donate if they meet age, weight, hemoglobin, and medical safety requirements. Anyone who is ill, recently had major treatment, or is unsure should consult a doctor first.'
+    },
+    groups: {
+        title: 'Blood Groups',
+        text: 'The main blood groups are A, B, AB, and O, each with positive or negative Rh type. Matching the correct group is important for safe transfusion.'
+    },
+    faqs: {
+        title: 'FAQs',
+        text: 'Blood donation is normally quick and safe when done through trained medical staff. Donors should eat well, drink water, rest after donation, and follow the recommended gap before donating again.'
+    }
+};
+
+function resetBloodAnswerPanel() {
+    if (bloodAnswerPanel) {
+        bloodAnswerPanel.hidden = true;
+    }
+
+    bloodAnswerButtons.forEach((button) => {
+        button.classList.remove('active');
+    });
+}
+
+bloodAnswerButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const answer = bloodAnswers[button.dataset.bloodAnswer];
+        if (!answer || !bloodAnswerPanel || !bloodAnswerTitle || !bloodAnswerText) return;
+
+        bloodAnswerTitle.textContent = answer.title;
+        bloodAnswerText.textContent = answer.text;
+        bloodAnswerPanel.hidden = false;
+
+        bloodAnswerButtons.forEach((item) => {
+            item.classList.toggle('active', item === button);
+        });
     });
 });
 
