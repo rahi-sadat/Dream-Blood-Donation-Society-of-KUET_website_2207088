@@ -162,6 +162,11 @@ bloodAnswerButtons.forEach((button) => {
         const answer = bloodAnswers[button.dataset.bloodAnswer];
         if (!answer || !bloodAnswerPanel || !bloodAnswerTitle || !bloodAnswerText) return;
 
+        if (button.classList.contains('active') && !bloodAnswerPanel.hidden) {
+            resetBloodAnswerPanel();
+            return;
+        }
+
         bloodAnswerTitle.textContent = answer.title;
         bloodAnswerText.textContent = answer.text;
         bloodAnswerPanel.hidden = false;

@@ -1726,3 +1726,156 @@ h2 {
         width: 36px;
     }
 }
+
+/* Safe UI polish: spacing and alignment only. Background image and footer color are unchanged. */
+.nav-links a,
+.footer-column a,
+.footer-info-link,
+.btn-primary,
+.btn-secondary,
+.btn-register,
+.btn-login,
+.btn-search,
+.btn-form-secondary,
+.btn-learn-more {
+    white-space: nowrap;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-register,
+.btn-login,
+.btn-search,
+.btn-form-secondary,
+.btn-learn-more {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    line-height: 1.2;
+    min-height: 44px;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-register,
+.btn-login,
+.btn-search,
+.emergency-request-button,
+.btn-form-secondary,
+.btn-learn-more {
+    box-shadow: 0 8px 18px rgba(29, 53, 87, 0.08);
+}
+
+.btn-login,
+.btn-form-secondary,
+.btn-learn-more {
+    background-color: var(--white);
+}
+
+.cta-group,
+.about-hero-actions,
+.form-actions,
+.success-actions,
+.filter-actions {
+    align-items: center;
+}
+
+.action-group {
+    flex: 0 0 auto;
+}
+
+.action-group .btn-search {
+    width: 100%;
+}
+
+.search-container {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 12px 28px rgba(29, 53, 87, 0.07);
+    padding: 22px;
+}
+
+.search-group select,
+.search-group input,
+.form-group input,
+.form-group select,
+.form-group textarea,
+.request-status-form select {
+    min-height: 46px;
+}
+
+.form-group textarea {
+    line-height: 1.6;
+}
+
+.blood-request-form,
+.auth-card,
+.profile-panel,
+.public-request-card,
+.donor-card,
+.campaign-feature-card,
+.campaign-card,
+.campaign-summary-card,
+.about-info-card,
+.left-col,
+.request-filter-form {
+    border-color: #eadde0;
+}
+
+.public-request-card,
+.donor-card,
+.campaign-card,
+.campaign-summary-card,
+.about-info-card,
+.profile-request-card {
+    transition: var(--transition);
+}
+
+.public-request-card:hover,
+.donor-card:hover,
+.about-info-card:hover,
+.profile-request-card:hover {
+    box-shadow: 0 16px 34px rgba(29, 53, 87, 0.1);
+    transform: translateY(-3px);
+}
+
+.request-card-head {
+    row-gap: 10px;
+}
+
+.request-contact-box .btn-form-secondary,
+.empty-state .btn-form-secondary,
+.empty-state .btn-primary,
+.request-contact-box .btn-primary {
+    margin-top: 8px;
+}
+
+.footer-info-link {
+    min-height: 0;
+}
+
+@media (max-width: 920px) {
+    .nav-actions {
+        gap: 10px;
+    }
+
+    .btn-register,
+    .btn-login {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+}
+
+@media (max-width: 720px) {
+    .search-container {
+        padding: 18px;
+    }
+
+    .cta-group .btn-primary,
+    .cta-group .btn-secondary,
+    .about-hero-actions .btn-primary,
+    .about-hero-actions .btn-secondary {
+        width: 100%;
+    }
+}
