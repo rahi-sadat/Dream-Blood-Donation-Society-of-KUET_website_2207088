@@ -145,6 +145,23 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </div>
         </section>
 
+        <section class="contact-rules-section" id="contact-rules">
+            <div class="contact-rules-inner">
+                <div class="contact-rules-copy">
+                    <span class="eyebrow">Contact &amp; donation rules</span>
+                    <h2>Need blood urgently?</h2>
+                    <p>Use this official DREAM notice for club member contacts and the documents/rules needed before collecting blood.</p>
+                    <div class="contact-rules-actions">
+                        <a class="btn-primary link-button" href="tel:01767847099">Call DREAM Contact</a>
+                        <a class="btn-form-secondary" href="mailto:dreaminfo.kuet@gmail.com">Email DREAM</a>
+                    </div>
+                </div>
+                <a class="contact-poster-card" href="images/contact.jpg" target="_blank" rel="noopener">
+                    <img src="images/contact.jpg" alt="DREAM KUET contact information and blood donation rules">
+                </a>
+            </div>
+        </section>
+
             </div>
                         
         <div id="about-page" style="display: none;">
@@ -218,6 +235,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
                 <a href="#about">About Us</a>
+                <a href="#contact-rules">Contact &amp; Rules</a>
             </div>
             <div class="footer-column">
                 <h4>About Blood</h4>
@@ -229,6 +247,17 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                     <h5 data-blood-answer-title></h5>
                     <p data-blood-answer-text></p>
                 </div>
+            </div>
+            <div class="footer-column footer-contact">
+                <h4>Contact DREAM</h4>
+                <a href="https://www.facebook.com/DreamKuet/" target="_blank" rel="noopener">
+                    <span class="footer-social-icon">f</span>
+                    Facebook Page
+                </a>
+                <a href="mailto:dreaminfo.kuet@gmail.com">
+                    <span class="footer-social-icon">@</span>
+                    dreaminfo.kuet@gmail.com
+                </a>
             </div>
         </div>
         <div class="footer-bottom">

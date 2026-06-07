@@ -216,6 +216,7 @@ if ($showResults) {
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
                 <a href="index.php#about">About Us</a>
+                <a href="index.php#contact-rules">Contact &amp; Rules</a>
             </div>
             <div class="footer-column">
                 <h4>About Blood</h4>
@@ -223,6 +224,17 @@ if ($showResults) {
                 <a href="#">Who can donate?</a>
                 <a href="#">Blood Groups</a>
                 <a href="#">FAQs</a>
+            </div>
+            <div class="footer-column footer-contact">
+                <h4>Contact DREAM</h4>
+                <a href="https://www.facebook.com/DreamKuet/" target="_blank" rel="noopener">
+                    <span class="footer-social-icon">f</span>
+                    Facebook Page
+                </a>
+                <a href="mailto:dreaminfo.kuet@gmail.com">
+                    <span class="footer-social-icon">@</span>
+                    dreaminfo.kuet@gmail.com
+                </a>
             </div>
         </div>
         <div class="footer-bottom">

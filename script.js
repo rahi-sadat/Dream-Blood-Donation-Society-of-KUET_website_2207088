@@ -117,6 +117,15 @@ pageLinks.forEach(link => {
         }
         else if (target === 'campaigns') {
             await showPage('campaigns');
+        } else {
+            if (target === 'contact-rules') {
+                await showPage('home');
+            }
+
+            const targetSection = document.getElementById(target);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
     }
     });
