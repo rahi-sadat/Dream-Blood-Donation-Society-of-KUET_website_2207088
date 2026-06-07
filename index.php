@@ -134,6 +134,22 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
              <a href="#about" class="btn-learn-more">Learn More</a>
         </section>
 
+        <section class="people-section" id="people">
+            <div class="people-section-head">
+                <span class="eyebrow">Our people</span>
+                <h2>Current Committee &amp; Volunteers</h2>
+                <p>View the current DREAM committee and volunteer list from the latest uploaded photos.</p>
+                <div class="people-actions" role="group" aria-label="People pages">
+                    <button class="people-toggle" type="button" data-link="people.php?type=committee">
+                        Committee
+                    </button>
+                    <button class="people-toggle" type="button" data-link="people.php?type=volunteers">
+                        Volunteers
+                    </button>
+                </div>
+            </div>
+        </section>
+
         <section id="requests">
             <div class="section-title">
                 <button class="emergency-request-button" type="button" data-link="add-request.php">
