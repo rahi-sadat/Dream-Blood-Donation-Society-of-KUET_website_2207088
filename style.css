@@ -1091,7 +1091,42 @@ h2 {
 }
 
 .campaign-card {
+    display: flex;
+    flex-direction: column;
     transition: var(--transition);
+}
+
+.campaign-card .card-content {
+    flex: 1;
+}
+
+.campaign-gallery-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 24px;
+}
+
+.campaign-photo-wrap {
+    aspect-ratio: 16 / 9;
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+.campaign-photo-wrap img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.poster-photo {
+    aspect-ratio: 16 / 9;
+}
+
+.poster-photo img {
+    object-fit: contain;
+    padding: 10px;
 }
 
 .campaign-card:hover,
@@ -1902,6 +1937,7 @@ h2 {
 
 @media (max-width: 860px) {
     .campaign-feature-card,
+    .campaign-gallery-grid,
     .previous-campaign-layout {
         grid-template-columns: 1fr;
     }
