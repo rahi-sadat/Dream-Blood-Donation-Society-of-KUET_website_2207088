@@ -184,6 +184,17 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </div>
         </section>
 
+        <section class="home-summary-section">
+            <div class="home-summary-inner">
+                <div>
+                    <span class="eyebrow">Monthly impact</span>
+                    <h2>Blood Donation Summary</h2>
+                    <p>See recent monthly blood donation totals by blood group.</p>
+                </div>
+                <a class="btn-primary link-button" href="blood-summary.php">View Summary</a>
+            </div>
+        </section>
+
             </div>
                         
         <div id="about-page" style="display: none;">
