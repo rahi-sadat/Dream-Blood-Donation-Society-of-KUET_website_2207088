@@ -14,6 +14,11 @@ CREATE TABLE IF NOT EXISTS users (
     is_donor TINYINT(1) NOT NULL DEFAULT 1,
     available_to_donate TINYINT(1) NOT NULL DEFAULT 1,
     last_donation_date DATE NULL,
+    is_member TINYINT(1) NOT NULL DEFAULT 0,
+    kuet_batch VARCHAR(20) NULL,
+    department VARCHAR(120) NULL,
+    roll_no VARCHAR(30) NULL,
+    member_joined_at DATETIME NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

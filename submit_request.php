@@ -120,6 +120,7 @@ $statement->execute([
                 <a href="find-donors.php">Search Donors</a>
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
+                <a href="join-us.php">Join Us</a>
                 <a href="index.php#about">About Us</a>
             </div>
             <div class="footer-column">

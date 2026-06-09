@@ -30,6 +30,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About Us</a></li>
+                <li><a href="join-us.php">Join Us</a></li>
                 <li><a href="find-donors.php">Search Donor</a></li>
                 <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php">Add Blood Request</a></li>
@@ -69,6 +70,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>
+            <a href="join-us.php">Join Us</a>
             <a class="sidebar-logout" href="logout.php">Logout</a>
         </aside>
     <?php endif; ?>
@@ -84,6 +86,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                 <div class="cta-group">
                     <button class="btn-primary" type="button" data-link="add-request.php">Blood Request</button>
                     <button class="btn-secondary" type="button" data-link="register.php">Become a Donor</button>
+                    <button class="btn-primary" type="button" data-link="join-us.php">Join Us</button>
                 </div>
             </div>
         </section>
@@ -131,7 +134,10 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             <p>Dream is a voluntary blood donation society at Khulna University of Engineering & Technology. We are
                 dedicated to promoting voluntary donation, managing emergency supplies, and creating awareness through
                 our regular campaigns.</p>
-             <a href="#about" class="btn-learn-more">Learn More</a>
+             <div class="about-actions">
+                <a href="#about" class="btn-learn-more">Learn More</a>
+                <a href="join-us.php" class="btn-primary link-button btn-join-large">Join Us</a>
+             </div>
         </section>
 
         <section class="people-section" id="people">
@@ -250,6 +256,7 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
                 <a href="find-donors.php">Search Donors</a>
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
+                <a href="join-us.php">Join Us</a>
                 <a href="#about">About Us</a>
                 <a href="#contact-rules">Contact &amp; Rules</a>
             </div>

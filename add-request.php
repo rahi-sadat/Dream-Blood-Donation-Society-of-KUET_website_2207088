@@ -34,6 +34,7 @@ $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
             <ul class="nav-links">
                 <li><a href="index.php#home">Home</a></li>
                 <li><a href="index.php#about">About Us</a></li>
+                <li><a href="join-us.php">Join Us</a></li>
                 <li><a href="find-donors.php">Search Donor</a></li>
                 <li><a href="blood-requests.php">Blood Requests</a></li>
                 <li><a href="add-request.php" class="active-link">Add Blood Request</a></li>
@@ -64,6 +65,7 @@ $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
         <a href="find-donors.php">Search Donors</a>
         <a href="blood-requests.php">Blood Requests</a>
         <a href="add-request.php">Add Blood Request</a>
+        <a href="join-us.php">Join Us</a>
         <a class="sidebar-logout" href="logout.php">Logout</a>
     </aside>
 
@@ -186,6 +188,7 @@ $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
                 <a href="blood-requests.php">Blood Requests</a>
                 <a href="add-request.php">Add Blood Request</a>
                 <a href="find-donors.php">Search Donors</a>
+                <a href="join-us.php">Join Us</a>
                 <a href="index.php#about">About Us</a>
                 <a href="index.php#contact-rules">Contact &amp; Rules</a>
             </div>

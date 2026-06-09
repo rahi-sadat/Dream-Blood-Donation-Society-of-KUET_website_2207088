@@ -584,6 +584,29 @@ h2 {
     max-width: 760px;
 }
 
+.about-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.about-actions .btn-learn-more {
+    margin-top: 0;
+}
+
+.btn-join-large {
+    flex-basis: 100%;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 4px auto 0;
+    max-width: 320px;
+    padding: 14px 34px;
+    text-align: center;
+    width: min(100%, 320px);
+}
+
 .people-section {
     align-items: stretch;
     background: var(--gray-bg);
@@ -1307,6 +1330,10 @@ h2 {
     max-width: 520px;
     padding: 36px;
     text-align: left;
+}
+
+.join-card {
+    max-width: 860px;
 }
 
 .auth-card h1 {
