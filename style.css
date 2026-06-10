@@ -274,11 +274,28 @@ button:hover {
   align-items: center; 
   text-align: center;
   background: url("images/background.jpg") center/cover;
+  overflow: hidden;
   padding: 0 20px;
+}
+
+.hero-section::after {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 1440 170' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none'%3E%3Cpath d='M0 115C95 78 190 78 310 104C455 136 510 143 630 101C775 50 895 51 1055 95C1207 137 1285 117 1400 105C1414 104 1428 104 1440 105V170H0Z' fill='%23ffffff'/%3E%3Cpath d='M72 102C176 84 270 113 360 129C454 146 538 137 630 105C760 60 880 65 1000 96' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M653 88C770 69 865 77 965 104C1060 130 1130 142 1208 131' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' opacity='.95'/%3E%3Cpath d='M1135 115C1240 84 1345 93 1440 115' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' opacity='.92'/%3E%3Cpath d='M0 132C120 79 245 105 372 130C492 153 555 135 675 98C820 54 928 68 1062 103C1208 142 1302 112 1440 127' fill='none' stroke='%23e63946' stroke-width='3' stroke-linecap='round' opacity='.55'/%3E%3Cpath d='M286 127C360 143 438 150 508 135' fill='none' stroke='%23e63946' stroke-width='3' stroke-linecap='round' opacity='.5'/%3E%3Cpath d='M930 106C1038 140 1142 150 1248 132' fill='none' stroke='%23e63946' stroke-width='3' stroke-linecap='round' opacity='.48'/%3E%3Cpath d='M104 122C148 116 204 119 244 130' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M385 116C432 124 472 126 515 118' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='.9'/%3E%3Cpath d='M1198 122C1260 110 1338 112 1406 127' fill='none' stroke='%23ffffff' stroke-width='4' stroke-linecap='round' opacity='.9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  bottom: -1px;
+  content: "";
+  height: 150px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 0;
 }
 
 .hero-content {
   max-width: 600px;
+  position: relative;
+  z-index: 1;
 }
 
 
