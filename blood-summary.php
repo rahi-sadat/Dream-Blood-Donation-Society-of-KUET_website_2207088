@@ -1,52 +1,19 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/admin.php';
+
+ensureAdminSchema($pdo);
 
 $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
+$isAdmin = isset($_SESSION['user_id']) && currentUserIsAdmin($pdo);
 
-$summaries = [
-    [
-        'month' => 'April 2026',
-        'year' => '2026',
-        'total' => '61 bags',
-        'src' => 'images/Blood_donation_Summary1.jpg',
-        'alt' => 'April 2026 blood donation summary by blood group',
-    ],
-    [
-        'month' => 'February 2026',
-        'year' => '2026',
-        'total' => '24 bags',
-        'src' => 'images/Blood_Donation_Summary2.jpg',
-        'alt' => 'February 2026 blood donation summary by blood group',
-    ],
-    [
-        'month' => 'January 2026',
-        'year' => '2026',
-        'total' => '58 bags',
-        'src' => 'images/Blood_Donation_Summary3.jpg',
-        'alt' => 'January 2026 blood donation summary by blood group',
-    ],
-    [
-        'month' => 'December 2025',
-        'year' => '2025',
-        'total' => '50 bags',
-        'src' => 'images/Blood_Donation_Summary4.jpg',
-        'alt' => 'December 2025 blood donation summary by blood group',
-    ],
-    [
-        'month' => 'November 2025',
-        'year' => '2025',
-        'total' => '44 bags',
-        'src' => 'images/Blood_Donation_Summary5.jpg',
-        'alt' => 'November 2025 blood donation summary by blood group',
-    ],
-    [
-        'month' => 'October 2025',
-        'year' => '2025',
-        'total' => '68 bags',
-        'src' => 'images/Blood_Donation_Summary6.jpg',
-        'alt' => 'October 2025 blood donation summary by blood group',
-    ],
-];
+$summaries = $pdo->query(
+    'SELECT *
+     FROM blood_summaries
+     WHERE is_active = 1
+     ORDER BY display_order ASC, id DESC'
+)->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -104,6 +71,9 @@ $summaries = [
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <?php if ($isAdmin): ?>
+                <a href="admin/dashboard.php">Admin Dashboard</a>
+            <?php endif; ?>
             <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>
@@ -127,15 +97,21 @@ $summaries = [
 
         <section class="blood-summary-page-section">
             <div class="blood-summary-grid summary-page-grid">
+                <?php if (!$summaries): ?>
+                    <div class="empty-state">
+                        <p>No blood donation summary image is available right now.</p>
+                    </div>
+                <?php endif; ?>
+
                 <?php foreach ($summaries as $summary): ?>
                     <article class="blood-summary-card">
-                        <a class="blood-summary-photo" href="<?php echo htmlspecialchars($summary['src']); ?>" target="_blank" rel="noopener">
-                            <img src="<?php echo htmlspecialchars($summary['src']); ?>" alt="<?php echo htmlspecialchars($summary['alt']); ?>">
+                        <a class="blood-summary-photo" href="<?php echo htmlspecialchars($summary['image_path']); ?>" target="_blank" rel="noopener">
+                            <img src="<?php echo htmlspecialchars($summary['image_path']); ?>" alt="<?php echo htmlspecialchars($summary['alt_text']); ?>">
                         </a>
                         <div class="blood-summary-content">
-                            <span class="status-tag"><?php echo htmlspecialchars($summary['year']); ?></span>
-                            <h3><?php echo htmlspecialchars($summary['month']); ?></h3>
-                            <p>Total donated: <?php echo htmlspecialchars($summary['total']); ?></p>
+                            <span class="status-tag"><?php echo htmlspecialchars($summary['summary_year']); ?></span>
+                            <h3><?php echo htmlspecialchars($summary['month_label']); ?></h3>
+                            <p>Total donated: <?php echo htmlspecialchars($summary['total_bags']); ?></p>
                         </div>
                     </article>
                 <?php endforeach; ?>

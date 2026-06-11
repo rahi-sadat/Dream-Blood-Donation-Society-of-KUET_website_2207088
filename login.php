@@ -1,9 +1,12 @@
 <?php
 session_start();
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/admin.php';
+
+ensureAdminSchema($pdo);
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: add-request.php');
+    header('Location: ' . (currentUserIsAdmin($pdo) ? 'admin/dashboard.php' : 'add-request.php'));
     exit;
 }
 
@@ -17,15 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || $password === '') {
         $error = 'Please enter email and password.';
     } else {
-        $statement = $pdo->prepare('SELECT id, full_name, password_hash FROM users WHERE email = ? LIMIT 1');
+        $statement = $pdo->prepare('SELECT id, full_name, password_hash, role FROM users WHERE email = ? LIMIT 1');
         $statement->execute([$email]);
         $user = $statement->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = (int) $user['id'];
             $_SESSION['user_name'] = $user['full_name'];
+            $_SESSION['user_role'] = $user['role'] ?? 'user';
 
-            header('Location: add-request.php');
+            header('Location: ' . ($_SESSION['user_role'] === 'admin' ? 'admin/dashboard.php' : 'add-request.php'));
             exit;
         }
 

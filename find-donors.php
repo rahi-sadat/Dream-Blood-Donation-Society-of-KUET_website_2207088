@@ -7,6 +7,7 @@ require_once __DIR__ . '/config/districts.php';
 $isLoggedIn = isset($_SESSION['user_id']);
 $currentUserId = $isLoggedIn ? (int) $_SESSION['user_id'] : 0;
 $profileInitial = $isLoggedIn ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
+$isAdmin = ($_SESSION['user_role'] ?? '') === 'admin';
 
 $bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 $selectedBloodGroup = trim($_GET['blood_group'] ?? '');
@@ -115,6 +116,9 @@ if ($showResults) {
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <?php if ($isAdmin): ?>
+                <a href="admin/dashboard.php">Admin Dashboard</a>
+            <?php endif; ?>
             <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>

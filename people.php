@@ -1,34 +1,39 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/admin.php';
+
+ensureAdminSchema($pdo);
 
 $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
+$isAdmin = isset($_SESSION['user_id']) && currentUserIsAdmin($pdo);
 $type = $_GET['type'] ?? 'committee';
 
-$galleries = [
+$galleryMeta = [
     'committee' => [
         'title' => 'Current Committee',
         'description' => 'The current DREAM committee from the latest uploaded photos.',
-        'images' => [
-            ['src' => 'images/Committee1.jpg', 'alt' => 'DREAM current committee photo 1'],
-            ['src' => 'images/Committee2.jpg', 'alt' => 'DREAM current committee photo 2'],
-            ['src' => 'images/Committee3.jpg', 'alt' => 'DREAM current committee photo 3'],
-        ],
     ],
     'volunteers' => [
         'title' => 'Volunteers List',
         'description' => 'The current DREAM volunteers list from the latest uploaded photos.',
-        'images' => [
-            ['src' => 'images/volunteers1.jpg', 'alt' => 'DREAM volunteers list photo 1'],
-            ['src' => 'images/volunteers2.jpg', 'alt' => 'DREAM volunteers list photo 2'],
-        ],
     ],
 ];
 
-if (!isset($galleries[$type])) {
+if (!isset($galleryMeta[$type])) {
     $type = 'committee';
 }
 
-$gallery = $galleries[$type];
+$gallery = $galleryMeta[$type];
+
+$statement = $pdo->prepare(
+    'SELECT *
+     FROM gallery_items
+     WHERE group_key = ? AND is_active = 1
+     ORDER BY display_order ASC, id ASC'
+);
+$statement->execute([$type]);
+$galleryItems = $statement->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,6 +91,9 @@ $gallery = $galleries[$type];
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <?php if ($isAdmin): ?>
+                <a href="admin/dashboard.php">Admin Dashboard</a>
+            <?php endif; ?>
             <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>
@@ -110,9 +118,23 @@ $gallery = $galleries[$type];
 
         <section class="people-gallery-section">
             <div class="people-gallery people-page-gallery">
-                <?php foreach ($gallery['images'] as $image): ?>
-                    <a class="people-photo" href="<?php echo htmlspecialchars($image['src']); ?>" target="_blank" rel="noopener">
-                        <img src="<?php echo htmlspecialchars($image['src']); ?>" alt="<?php echo htmlspecialchars($image['alt']); ?>">
+                <?php if (!$galleryItems): ?>
+                    <div class="empty-state">
+                        <p>No <?php echo htmlspecialchars($gallery['title']); ?> photos are available right now.</p>
+                    </div>
+                <?php endif; ?>
+
+                <?php foreach ($galleryItems as $image): ?>
+                    <a class="people-photo" href="<?php echo htmlspecialchars($image['image_path']); ?>" target="_blank" rel="noopener">
+                        <img src="<?php echo htmlspecialchars($image['image_path']); ?>" alt="<?php echo htmlspecialchars($image['alt_text']); ?>">
+                        <?php if ($image['title'] || $image['description']): ?>
+                            <span class="people-photo-caption">
+                                <strong><?php echo htmlspecialchars($image['title']); ?></strong>
+                                <?php if ($image['description']): ?>
+                                    <small><?php echo htmlspecialchars($image['description']); ?></small>
+                                <?php endif; ?>
+                            </span>
+                        <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
             </div>

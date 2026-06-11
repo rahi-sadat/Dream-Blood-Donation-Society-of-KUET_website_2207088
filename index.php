@@ -3,6 +3,7 @@
 session_start();
 require_once __DIR__ . '/config/districts.php';
 $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSION['user_name']), 0, 1)) : '';
+$isAdmin = ($_SESSION['user_role'] ?? '') === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,6 +68,9 @@ $profileInitial = isset($_SESSION['user_name']) ? strtoupper(substr(trim($_SESSI
             </div>
             <a href="profile.php?section=info">Profile Information</a>
             <a href="profile.php?section=requests">My Blood Requests</a>
+            <?php if ($isAdmin): ?>
+                <a href="admin/dashboard.php">Admin Dashboard</a>
+            <?php endif; ?>
             <a href="find-donors.php">Search Donors</a>
             <a href="blood-requests.php">Blood Requests</a>
             <a href="add-request.php">Add Blood Request</a>

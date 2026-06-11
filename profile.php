@@ -11,6 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = (int) $_SESSION['user_id'];
 $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
+$isAdmin = ($_SESSION['user_role'] ?? '') === 'admin';
 $activeSection = $_GET['section'] ?? 'info';
 $activeSection = in_array($activeSection, ['info', 'requests'], true) ? $activeSection : 'info';
 $errors = [];
@@ -168,6 +169,9 @@ if ($requests) {
         </div>
         <a href="profile.php?section=info">Profile Information</a>
         <a href="profile.php?section=requests">My Blood Requests</a>
+        <?php if ($isAdmin): ?>
+            <a href="admin/dashboard.php">Admin Dashboard</a>
+        <?php endif; ?>
         <a href="find-donors.php">Search Donors</a>
         <a href="blood-requests.php">Blood Requests</a>
         <a href="add-request.php">Add Blood Request</a>

@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
+$isAdmin = ($_SESSION['user_role'] ?? '') === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +63,9 @@ $profileInitial = strtoupper(substr(trim($_SESSION['user_name']), 0, 1));
         </div>
         <a href="profile.php?section=info">Profile Information</a>
         <a href="profile.php?section=requests">My Blood Requests</a>
+        <?php if ($isAdmin): ?>
+            <a href="admin/dashboard.php">Admin Dashboard</a>
+        <?php endif; ?>
         <a href="find-donors.php">Search Donors</a>
         <a href="blood-requests.php">Blood Requests</a>
         <a href="add-request.php">Add Blood Request</a>

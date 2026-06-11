@@ -2,9 +2,12 @@
 session_start();
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/districts.php';
+require_once __DIR__ . '/config/admin.php';
+
+ensureAdminSchema($pdo);
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: add-request.php');
+    header('Location: ' . (currentUserIsAdmin($pdo) ? 'admin/dashboard.php' : 'add-request.php'));
     exit;
 }
 
@@ -90,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['user_id'] = (int) $pdo->lastInsertId();
             $_SESSION['user_name'] = $fullName;
+            $_SESSION['user_role'] = 'user';
 
             header('Location: add-request.php');
             exit;

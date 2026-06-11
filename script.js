@@ -70,7 +70,7 @@ function loadCampaignContent() {
     }
 
     if (!campaignContentPromise) {
-        campaignContentPromise = fetch('campaigns.html')
+        campaignContentPromise = fetch('campaigns.php')
             .then((response) => {
                 if (!response.ok) throw new Error('Campaign file not found');
                 return response.text();

@@ -3,8 +3,10 @@ session_start();
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/districts.php';
 require_once __DIR__ . '/config/member_schema.php';
+require_once __DIR__ . '/config/admin.php';
 
 ensureMemberColumns($pdo);
+ensureAdminSchema($pdo);
 
 $isLoggedIn = isset($_SESSION['user_id']);
 $userId = $isLoggedIn ? (int) $_SESSION['user_id'] : 0;
@@ -168,6 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['user_id'] = (int) $pdo->lastInsertId();
             $_SESSION['user_name'] = $fullName;
+            $_SESSION['user_role'] = 'user';
 
             header('Location: join-us.php?joined=1');
             exit;
