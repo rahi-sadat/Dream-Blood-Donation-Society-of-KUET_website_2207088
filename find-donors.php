@@ -227,10 +227,14 @@ if ($showResults) {
             </div>
             <div class="footer-column">
                 <h4>About Blood</h4>
-                <a href="#">What is blood?</a>
-                <a href="#">Who can donate?</a>
-                <a href="#">Blood Groups</a>
-                <a href="#">FAQs</a>
+                <button class="footer-info-link" type="button" data-blood-answer="what">What is blood?</button>
+                <button class="footer-info-link" type="button" data-blood-answer="donate">Who can donate?</button>
+                <button class="footer-info-link" type="button" data-blood-answer="groups">Blood Groups</button>
+                <button class="footer-info-link" type="button" data-blood-answer="faqs">FAQs</button>
+                <div class="footer-answer-card" data-blood-answer-panel aria-live="polite" hidden>
+                    <h5 data-blood-answer-title></h5>
+                    <p data-blood-answer-text></p>
+                </div>
             </div>
             <div class="footer-column footer-contact">
                 <h4>Contact DREAM</h4>
