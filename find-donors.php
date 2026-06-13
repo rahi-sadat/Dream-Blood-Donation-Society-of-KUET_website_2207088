@@ -22,7 +22,7 @@ if (!in_array($selectedDistrict, $districts, true)) {
     $selectedDistrict = '';
 }
 
-// Donor eligibility: opted-in, available, and not within 90 days of last donation.
+// Donor eligibility (90 days)
 $where = [
     'is_donor = 1',
     'available_to_donate = 1',
@@ -128,7 +128,7 @@ if ($showResults) {
     <?php endif; ?>
 
     <main>
-        <!-- Donor search hero: explains how donor results are selected. -->
+       
         <section class="donor-search-hero">
             <div class="request-hero-content">
                 <span class="eyebrow">Find donors</span>

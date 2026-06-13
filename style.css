@@ -1066,6 +1066,16 @@ h2 {
     margin-bottom: 58px;
 }
 
+.campaign-feature-list {
+    display: grid;
+    gap: 28px;
+    margin-bottom: 58px;
+}
+
+.campaign-feature-list .campaign-feature-card {
+    margin-bottom: 0;
+}
+
 .campaign-summary-action {
     align-items: center;
     border-bottom: 1px solid var(--line);
@@ -1171,6 +1181,13 @@ h2 {
     background: var(--soft-red);
     border-color: #fecdd3;
     color: var(--primary);
+    width: fit-content;
+}
+
+.today-tag {
+    background: #fff7ed;
+    border-color: #fed7aa;
+    color: #c2410c;
     width: fit-content;
 }
 

@@ -29,21 +29,17 @@ if ($campaigns) {
     }
 }
 
-$featuredCampaign = null;
+$featuredCampaigns = array_values(array_filter($campaigns, function ($campaign) {
+    return (int) $campaign['is_featured'] === 1;
+}));
 
-foreach ($campaigns as $campaign) {
-    if ((int) $campaign['is_featured'] === 1) {
-        $featuredCampaign = $campaign;
-        break;
-    }
+if (!$featuredCampaigns && $campaigns) {
+    $featuredCampaigns = [$campaigns[0]];
 }
 
-if (!$featuredCampaign && $campaigns) {
-    $featuredCampaign = $campaigns[0];
-}
-
-$previousCampaigns = array_values(array_filter($campaigns, function ($campaign) use ($featuredCampaign) {
-    return !$featuredCampaign || (int) $campaign['id'] !== (int) $featuredCampaign['id'];
+$featuredCampaignIds = array_map('intval', array_column($featuredCampaigns, 'id'));
+$previousCampaigns = array_values(array_filter($campaigns, function ($campaign) use ($featuredCampaignIds) {
+    return !in_array((int) $campaign['id'], $featuredCampaignIds, true);
 }));
 
 function campaignImagesFor(array $campaign, array $campaignImagesById)
@@ -90,6 +86,19 @@ function renderCampaignMedia(array $campaign, array $images, $singleClass, $show
         </div>
     <?php endif;
 }
+
+function campaignStatusClass($statusLabel)
+{
+    if ($statusLabel === 'Today') {
+        return 'today-tag';
+    }
+
+    if ($statusLabel === 'Upcoming') {
+        return 'upcoming-tag';
+    }
+
+    return '';
+}
 ?>
 <section class="campaign-hero">
     <div class="campaign-hero-content">
@@ -100,32 +109,36 @@ function renderCampaignMedia(array $campaign, array $images, $singleClass, $show
 </section>
 
 <section class="campaign-container">
-    <?php if ($featuredCampaign): ?>
+    <?php if ($featuredCampaigns): ?>
         <div class="campaign-section-heading">
             <span class="eyebrow">Highlighted</span>
-            <h2>Featured Campaign</h2>
+            <h2>Featured Campaigns</h2>
         </div>
 
-        <div class="campaign-feature-card">
-            <?php renderCampaignMedia($featuredCampaign, campaignImagesFor($featuredCampaign, $campaignImagesById), 'campaign-image-wrap', true); ?>
-            <div class="campaign-info">
-                <span class="status-tag <?php echo $featuredCampaign['status_label'] === 'Upcoming' ? 'upcoming-tag' : ''; ?>">
-                    <?php echo admin_e($featuredCampaign['status_label']); ?>
-                </span>
-                <h3><?php echo admin_e($featuredCampaign['title']); ?></h3>
-                <p><?php echo admin_e($featuredCampaign['description']); ?></p>
-                <div class="campaign-meta">
-                    <?php if ($featuredCampaign['event_date']): ?>
-                        <span><?php echo admin_e($featuredCampaign['event_date']); ?></span>
-                    <?php endif; ?>
-                    <?php if ($featuredCampaign['location']): ?>
-                        <span><?php echo admin_e($featuredCampaign['location']); ?></span>
-                    <?php endif; ?>
-                    <?php if ($featuredCampaign['category']): ?>
-                        <span><?php echo admin_e($featuredCampaign['category']); ?></span>
-                    <?php endif; ?>
+        <div class="campaign-feature-list">
+            <?php foreach ($featuredCampaigns as $featuredCampaign): ?>
+                <div class="campaign-feature-card">
+                    <?php renderCampaignMedia($featuredCampaign, campaignImagesFor($featuredCampaign, $campaignImagesById), 'campaign-image-wrap', true); ?>
+                    <div class="campaign-info">
+                        <span class="status-tag <?php echo campaignStatusClass($featuredCampaign['status_label']); ?>">
+                            <?php echo admin_e($featuredCampaign['status_label']); ?>
+                        </span>
+                        <h3><?php echo admin_e($featuredCampaign['title']); ?></h3>
+                        <p><?php echo admin_e($featuredCampaign['description']); ?></p>
+                        <div class="campaign-meta">
+                            <?php if ($featuredCampaign['event_date']): ?>
+                                <span><?php echo admin_e($featuredCampaign['event_date']); ?></span>
+                            <?php endif; ?>
+                            <?php if ($featuredCampaign['location']): ?>
+                                <span><?php echo admin_e($featuredCampaign['location']); ?></span>
+                            <?php endif; ?>
+                            <?php if ($featuredCampaign['category']): ?>
+                                <span><?php echo admin_e($featuredCampaign['category']); ?></span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     <?php endif; ?>
 
@@ -144,7 +157,7 @@ function renderCampaignMedia(array $campaign, array $images, $singleClass, $show
                 <article class="campaign-card">
                     <?php renderCampaignMedia($campaign, campaignImagesFor($campaign, $campaignImagesById), 'campaign-photo-wrap'); ?>
                     <div class="card-content">
-                        <span class="status-tag <?php echo $campaign['status_label'] === 'Upcoming' ? 'upcoming-tag' : ''; ?>">
+                        <span class="status-tag <?php echo campaignStatusClass($campaign['status_label']); ?>">
                             <?php echo admin_e($campaign['status_label']); ?>
                         </span>
                         <h3><?php echo admin_e($campaign['title']); ?></h3>

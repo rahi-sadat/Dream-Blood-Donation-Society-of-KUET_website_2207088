@@ -13,6 +13,7 @@ $successMessages = [
     'image_toggled' => 'Slider photo visibility updated successfully.',
 ];
 $success = $successMessages[$_GET['message'] ?? ''] ?? '';
+$campaignStatusOptions = ['Today', 'Upcoming', 'Completed', 'Draft'];
 $formItem = [
     'id' => 0,
     'title' => '',
@@ -133,6 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($statusLabel === '') {
             $errors[] = 'Status label is required.';
+        } elseif (!in_array($statusLabel, $campaignStatusOptions, true)) {
+            $errors[] = 'Please select a valid campaign status.';
         }
 
         $imagePath = adminUploadImage('image', $currentImagePath, $errors);
@@ -142,10 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!$errors) {
-            if ($isFeatured === 1) {
-                $pdo->exec('UPDATE campaigns SET is_featured = 0');
-            }
-
             $savedCampaignId = $id;
 
             if ($id > 0) {
@@ -280,7 +279,7 @@ require __DIR__ . '/_header.php';
             <div class="form-group">
                 <label for="status_label">Status</label>
                 <select id="status_label" name="status_label" required>
-                    <?php foreach (['Upcoming', 'Completed', 'Draft'] as $statusOption): ?>
+                    <?php foreach ($campaignStatusOptions as $statusOption): ?>
                         <option value="<?php echo admin_e($statusOption); ?>" <?php echo $formItem['status_label'] === $statusOption ? 'selected' : ''; ?>>
                             <?php echo admin_e($statusOption); ?>
                         </option>

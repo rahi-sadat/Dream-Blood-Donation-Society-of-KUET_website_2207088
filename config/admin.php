@@ -98,6 +98,7 @@ function ensureAdminSchema(PDO $pdo)
 
     seedAdminContent($pdo);
     syncExistingCampaignImages($pdo);
+    seedBloodDonorDayCampaign($pdo);
     $done = true;
 }
 
@@ -275,6 +276,92 @@ function seedAdminContent(PDO $pdo)
          ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
     );
     $statement->execute(['admin_content_seeded', '1']);
+}
+
+function seedBloodDonorDayCampaign(PDO $pdo)
+{
+    $statement = $pdo->prepare('SELECT setting_value FROM site_settings WHERE setting_key = ? LIMIT 1');
+    $statement->execute(['blood_donor_day_today_status_added']);
+
+    if ($statement->fetchColumn() === '1') {
+        return;
+    }
+
+    $campaign = [
+        'title' => 'Blood Donor Day 2026',
+        'description' => 'DREAM KUET observes Blood Donor Day to celebrate voluntary donors and encourage more students to stand beside patients in urgent need.',
+        'image_path' => 'images/Blood_Donor_Day.jpg',
+        'alt_text' => 'Blood Donor Day campaign poster',
+        'status_label' => 'Today',
+        'event_date' => 'June 14, 2026',
+        'location' => 'KUET Campus',
+        'category' => 'Awareness Campaign',
+        'badge_text' => 'Today',
+        'is_featured' => 1,
+        'display_order' => 0,
+        'is_active' => 1,
+    ];
+
+    $statement = $pdo->prepare('SELECT id FROM campaigns WHERE title = ? LIMIT 1');
+    $statement->execute([$campaign['title']]);
+    $campaignId = (int) $statement->fetchColumn();
+
+    if ($campaignId > 0) {
+        $statement = $pdo->prepare(
+            'UPDATE campaigns
+             SET description = ?, image_path = ?, alt_text = ?, status_label = ?, event_date = ?,
+                 location = ?, category = ?, badge_text = ?, is_featured = ?, display_order = ?, is_active = ?
+             WHERE id = ?'
+        );
+        $statement->execute([
+            $campaign['description'],
+            $campaign['image_path'],
+            $campaign['alt_text'],
+            $campaign['status_label'],
+            $campaign['event_date'],
+            $campaign['location'],
+            $campaign['category'],
+            $campaign['badge_text'],
+            $campaign['is_featured'],
+            $campaign['display_order'],
+            $campaign['is_active'],
+            $campaignId,
+        ]);
+    } else {
+        $statement = $pdo->prepare(
+            'INSERT INTO campaigns
+                (title, description, image_path, alt_text, status_label, event_date, location, category, badge_text, is_featured, display_order, is_active)
+             VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        );
+        $statement->execute([
+            $campaign['title'],
+            $campaign['description'],
+            $campaign['image_path'],
+            $campaign['alt_text'],
+            $campaign['status_label'],
+            $campaign['event_date'],
+            $campaign['location'],
+            $campaign['category'],
+            $campaign['badge_text'],
+            $campaign['is_featured'],
+            $campaign['display_order'],
+            $campaign['is_active'],
+        ]);
+        $campaignId = (int) $pdo->lastInsertId();
+    }
+
+    syncCampaignPrimaryImage($pdo, $campaignId, $campaign['image_path'], $campaign['alt_text']);
+
+    $statement = $pdo->prepare('UPDATE campaigns SET is_featured = 1 WHERE title = ?');
+    $statement->execute(['KUET Mega Blood Drive 2026']);
+
+    $statement = $pdo->prepare(
+        'INSERT INTO site_settings (setting_key, setting_value)
+         VALUES (?, ?)
+         ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
+    );
+    $statement->execute(['blood_donor_day_today_status_added', '1']);
 }
 
 function syncCampaignPrimaryImage(PDO $pdo, $campaignId, $imagePath, $altText)

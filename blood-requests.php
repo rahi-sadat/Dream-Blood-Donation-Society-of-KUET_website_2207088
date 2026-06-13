@@ -1,5 +1,5 @@
 <?php
-// Public blood requests page: lists active requests and lets users filter them.
+
 session_start();
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/districts.php';
@@ -21,7 +21,7 @@ $donationMessage = $_SESSION['donation_message'] ?? '';
 $donationMessageType = $_SESSION['donation_message_type'] ?? 'success';
 unset($_SESSION['donation_message'], $_SESSION['donation_message_type']);
 
-// Response table setup: keeps existing local databases compatible after this feature is added.
+
 $pdo->exec(
     "CREATE TABLE IF NOT EXISTS donation_responses (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,10 +51,10 @@ if (!in_array($selectedStatus, $statusOptions, true)) {
     $selectedStatus = 'active';
 }
 
-// Automatic status maintenance: unanswered past-date requests are no longer pending.
+
 $pdo->exec("UPDATE blood_requests SET status = 'Expired' WHERE status = 'Pending' AND needed_date < CURDATE()");
 
-// Donate response handler: validates donor eligibility before recording interest.
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'donate') {
     if (!$isLoggedIn) {
         header('Location: login.php');
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'donat
     exit;
 }
 
-// Request query builder: keeps filters optional while still using prepared statements.
+
 $where = [];
 $params = [];
 
